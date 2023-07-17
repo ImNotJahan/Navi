@@ -1,6 +1,6 @@
-#include "lisp.h"
-#include "garbage_collection.h"
-#include "data.h"
+#include "../include/main.h"
+#include "../include/garbage_collection.h"
+#include "../include/data.h"
 
 Atom construct(Atom head, Atom tail)
 {

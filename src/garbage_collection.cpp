@@ -1,5 +1,5 @@
-#include "lisp.h"
-#include "garbage_collection.h"
+#include "../include/main.h"
+#include "../include/garbage_collection.h"
 
 void mark(Atom root)
 {

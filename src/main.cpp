@@ -1,6 +1,6 @@
-#include "lisp.h"
-#include "functions.h"
-#include "library.h"
+#include "../include/main.h"
+#include "../include/functions.h"
+#include "../include/library.h"
 #include <iostream>
 
 int main()

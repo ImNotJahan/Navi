@@ -128,31 +128,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="data.cpp" />
-    <ClCompile Include="environment.cpp" />
-    <ClCompile Include="evaluate.cpp" />
-    <ClCompile Include="functions.cpp" />
-    <ClCompile Include="garbage_collection.cpp" />
-    <ClCompile Include="library.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="numbers.cpp" />
-    <ClCompile Include="parser.cpp" />
-    <ClCompile Include="print.cpp" />
-    <ClCompile Include="strings.cpp" />
-    <ClCompile Include="testing.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="data.h" />
-    <ClInclude Include="functions.h" />
-    <ClInclude Include="garbage_collection.h" />
-    <ClInclude Include="library.h" />
-    <ClInclude Include="lisp.h" />
-    <ClInclude Include="numbers.h" />
-    <ClInclude Include="parser.h" />
-    <ClInclude Include="strings.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="library.navi" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\data.cpp" />
+    <ClCompile Include="src\environment.cpp" />
+    <ClCompile Include="src\evaluate.cpp" />
+    <ClCompile Include="src\functions.cpp" />
+    <ClCompile Include="src\garbage_collection.cpp" />
+    <ClCompile Include="src\library.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\numbers.cpp" />
+    <ClCompile Include="src\parser.cpp" />
+    <ClCompile Include="src\print.cpp" />
+    <ClCompile Include="src\strings.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\data.h" />
+    <ClInclude Include="include\functions.h" />
+    <ClInclude Include="include\garbage_collection.h" />
+    <ClInclude Include="include\library.h" />
+    <ClInclude Include="include\main.h" />
+    <ClInclude Include="include\numbers.h" />
+    <ClInclude Include="include\parser.h" />
+    <ClInclude Include="include\strings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,5 @@
-#include "lisp.h"
-#include "functions.h"
+#include "../include/main.h"
+#include "../include/functions.h"
 
 Error function_head(Atom args, Atom* result)
 {

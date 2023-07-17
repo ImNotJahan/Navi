@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
-#include "lisp.h"
-#include "library.h"
+#include "../include/main.h"
+#include "../include/library.h"
 
 std::string read_file(std::string path)
 {

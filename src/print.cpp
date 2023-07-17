@@ -1,6 +1,6 @@
-#include "lisp.h"
+#include "../include/main.h"
 #include <iostream>
-#include "data.h"
+#include "../include/data.h"
 
 void print_expr(Atom atom)
 {

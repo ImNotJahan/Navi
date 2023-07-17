@@ -1,5 +1,5 @@
 #include <string>
-#include "strings.h"
+#include "../include/strings.h"
 
 void remove_starting_chars(std::string& str, const char* charsToRemove)
 {

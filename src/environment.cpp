@@ -1,5 +1,5 @@
-#include "lisp.h"
-#include "data.h"
+#include "../include/main.h"
+#include "../include/data.h"
 
 Atom env_create(Atom parent)
 {

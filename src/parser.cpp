@@ -1,8 +1,8 @@
-#include "lisp.h"
-#include "strings.h"
-#include "numbers.h"
-#include "parser.h"
-#include "data.h"
+#include "../include/main.h"
+#include "../include/strings.h"
+#include "../include/numbers.h"
+#include "../include/parser.h"
+#include "../include/data.h"
 
 Error lexer(std::string str, std::string* start, std::string* end)
 {

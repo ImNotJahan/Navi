@@ -1,5 +1,5 @@
-#include "lisp.h"
-#include "data.h"
+#include "../include/main.h"
+#include "../include/data.h"
 
 Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 {
