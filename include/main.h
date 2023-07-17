@@ -83,7 +83,8 @@ struct Error
 		SYNTAX,
 		UNBOUND,
 		ARGS,
-		TYPE
+		TYPE,
+		EMPTY
 	} type;
 
 	std::string details = "";

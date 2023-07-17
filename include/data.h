@@ -20,3 +20,5 @@ bool listp(Atom expr);
 
 int list_length(Atom list);
 Atom copy_list(Atom list);
+
+std::string to_string(Atom str);

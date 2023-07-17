@@ -1,5 +1,6 @@
 #include "../include/main.h"
 #include "../include/data.h"
+#include "../include/library.h"
 
 Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 {
@@ -101,6 +102,16 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 			*result = name;
 
 			return env_set(environment, name, macro);
+		}
+		else if (*operation.value.symbol == "LOAD")
+		{
+			if (list_length(args) != 1) return ARGNUM;
+
+			if (head(args).type != Atom::STRING) return Error{ Error::TYPE, "Expected string", "LOAD" };
+
+			interpret_file(environment, to_string(head(args)), LogLevel::ERROR_ONLY);
+			
+			return Error{ Error::EMPTY };
 		}
 	}
 	

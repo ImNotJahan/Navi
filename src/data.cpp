@@ -174,3 +174,16 @@ Atom copy_list(Atom list)
 
 	return atom;
 }
+
+std::string to_string(Atom str)
+{
+	std::string temp = "";
+
+	while (!nullp(str))
+	{
+		temp += head(str).value.character;
+		str = tail(str);
+	}
+
+	return temp;
+}

@@ -30,7 +30,7 @@ Error lexer(std::string str, std::string* start, std::string* end)
 			*end = "";
 			*start = "null"; // this is here so it doesn't crash trying to handle nothing if there is only a comment in a program
 
-			return NOERR;
+			return Error{ Error::EMPTY };
 		}
 
 		str = str.substr(index);

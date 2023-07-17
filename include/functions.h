@@ -22,7 +22,6 @@ Error function_or(Atom args, Atom* result);
 
 Error function_apply(Atom args, Atom* result);
 Error function_print(Atom args, Atom* result);
-Error function_load(Atom args, Atom* result);
 
 #define is_number(a) (a.type == Atom::INTEGER || a.type == Atom::FLOAT)
 

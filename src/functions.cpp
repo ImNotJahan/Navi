@@ -283,9 +283,3 @@ Error function_print(Atom args, Atom* result)
 
 	return NOERR;
 }
-
-Error function_load(Atom args, Atom* result)
-{
-	// Need to add strings before able to implement this func
-	return NOERR;
-}

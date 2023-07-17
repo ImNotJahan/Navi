@@ -70,12 +70,7 @@ void print_expr(Atom atom)
 			break;
 
 		case Atom::STRING:
-			while (!nullp(atom))
-			{
-				std::cout << head(atom).value.character;
-				atom = tail(atom);
-			}
-			
+			std::cout << to_string(atom);
 			break;
 
 		case Atom::RATIO:
@@ -105,6 +100,9 @@ void print_err(Error err)
 
 		case Error::TYPE:
 			std::cout << "Type error";
+			break;
+
+		case Error::EMPTY:
 			break;
 
 		default:
