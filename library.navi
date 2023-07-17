@@ -1,0 +1,94 @@
+(set (abs x) (if (< x 0) (* x -1) x))
+
+(set (> a b) (< b a))
+
+(set (! p) (= p false))
+(set (!= a b) (! (= a b)))
+
+(set (null? var) (= (type var) null))
+(set (pair? var) (= (type var) 'PAIR))
+
+(set (positive? var) (> var 0))
+
+(set (length list)
+	(if (null? list)
+		0
+		(+ 1 (length (tail list)))))
+
+(set (exp num pow)
+	(if (< pow 1)
+		1
+		(* num (exp num (- pow 1)))))
+
+(set (fold_left proc init list)
+    (if (! (null? list))
+        (fold_left proc
+            (proc init (head list))
+            (tail list))
+    init))
+
+(set (fold_right proc init list)
+	(if (! (null? list))
+		(proc (head list)
+			(fold_right proc init (tail list)))
+	init))
+
+(set (list . items)
+    (fold_right cons null items))
+
+(set (reverse list)
+    (fold_left (lambda (a x) (cons x a)) null list))
+
+(set (append a b) (fold_right cons b a))
+
+(set (hhead x) (head (head x)))
+(set (hail x) (head (tail x)))
+
+~ this is a comment
+
+| does this
+work? |
+
+(set (u= a b) 
+    (if (= (type a) (type b))
+        (= a b)
+        false))
+
+(macro (quasiquote x)
+    (if (pair? x)
+        (if (u= (head x) 'unquote)
+            (hail x)
+            (if (u= (if (pair? (head x)) (hhead x) null) 'unquote-splicing)
+                (list 'append
+                    (hail (head x))
+                    (list 'quasiquote (tail x)))
+                (list 'cons
+                    (list 'quasiquote (head x))
+                    (list 'quasiquote (tail x)))))
+        (list 'quote x)))
+
+(set (unary-map proc list)
+    (fold_right (lambda (x rest) (cons (proc x) rest))
+        null
+        list))
+
+(set (!null? var) (! (null? var)))
+
+(set (map proc . arg-lists)
+  (if (!null? (head arg-lists))
+      (cons (apply proc (unary-map head arg-lists))
+            (apply map (cons proc
+                             (unary-map tail arg-lists))))
+      null))
+
+(macro (++ var) `(set ,var (+ ,var 1)))
+(macro (-- var) `(set ,var (- ,var 1)))
+
+(macro (+= var value) `(set ,var (+ ,var ,value)))
+(macro (-= var value) `(set ,var (- ,var ,value)))
+(macro (*= var value) `(set ,var (* ,var ,value)))
+(macro (/= var value) `(set ,var (/ ,var ,value)))
+
+(macro (let defs . body)
+    `((lambda ,(map head defs) ,@body)
+        ,@(map hail defs)))
