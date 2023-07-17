@@ -20,6 +20,8 @@
 		1
 		(* num (exp num (- pow 1)))))
 
+(set (square num) (exp num 2))
+
 (set (fold_left proc init list)
     (if (! (null? list))
         (fold_left proc
@@ -75,11 +77,11 @@ work? |
 (set (!null? var) (! (null? var)))
 
 (set (map proc . arg-lists)
-  (if (!null? (head arg-lists))
-      (cons (apply proc (unary-map head arg-lists))
-            (apply map (cons proc
-                             (unary-map tail arg-lists))))
-      null))
+	(if (!null? (head arg-lists))
+		(cons (apply proc (unary-map head arg-lists))
+			(apply map (cons proc
+				(unary-map tail arg-lists))))
+		null))
 
 (macro (++ var) `(set ,var (+ ,var 1)))
 (macro (-- var) `(set ,var (- ,var 1)))
@@ -92,3 +94,10 @@ work? |
 (macro (let defs . body)
     `((lambda ,(map head defs) ,@body)
         ,@(map hail defs)))
+		
+(set (get list index) 
+	(if (null? list)
+		'OUT_OF_BOUNDS
+		(if (!= 0 index)
+			(get (tail list) (- index 1))
+			(head list))))
