@@ -128,9 +128,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="library.navi" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\data.cpp" />
     <ClCompile Include="src\environment.cpp" />
     <ClCompile Include="src\evaluate.cpp" />
@@ -152,6 +149,9 @@
     <ClInclude Include="include\numbers.h" />
     <ClInclude Include="include\parser.h" />
     <ClInclude Include="include\strings.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="navi\library.navi" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

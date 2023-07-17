@@ -12,7 +12,7 @@ int main()
 
 	set_default_environment(&env);
 
-	interpret_file(env, "library.navi", LogLevel::ERROR_ONLY);
+	interpret_file(env, "navi/library.navi", LogLevel::ERROR_ONLY);
 
 	std::cout << "> ";
 	std::getline(std::cin, input);
