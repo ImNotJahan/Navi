@@ -33,6 +33,8 @@ Error function_float(Atom args, Atom* result);
 Error function_numerator(Atom args, Atom* result);
 Error function_denominator(Atom args, Atom* result);
 
+Error function_error(Atom args, Atom* result);
+
 #define is_number(a) (a.type == Atom::INTEGER || a.type == Atom::FLOAT)
 
 #define both_type(a, b, t) (a.type == Atom::t && b.type == Atom::t)
@@ -41,3 +43,5 @@ Error function_denominator(Atom args, Atom* result);
 #define check_args(args, a) if (list_length(args) != a) return ARGNUM
 
 #define tf ? true_ : false_
+
+#define check_type(a, t, ts, f) if (a.type != Atom::t) return Error{ Error::TYPE, "Expected " ts, f }

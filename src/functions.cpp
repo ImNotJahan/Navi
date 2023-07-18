@@ -1,5 +1,6 @@
 #include "../include/main.h"
 #include "../include/functions.h"
+#include <map>
 
 Error function_head(Atom args, Atom* result)
 {
@@ -358,10 +359,52 @@ Error function_denominator(Atom args, Atom* result)
 	Atom ratio = head(args);
 	Atom denominator{ Atom::INTEGER };
 
-	if (ratio.type != Atom::RATIO) return Error{ Error::TYPE, "Expected ratio", "DENOMINATOR" };
+	check_type(ratio, RATIO, "ratio", "DENOMINATOR");
 
 	denominator.value.integer = ratio.value.ratio.denominator;
 	*result = denominator;
 
 	return NOERR;
+}
+
+Error function_error(Atom args, Atom* result)
+{
+	const int arg_length = list_length(args);
+
+	if (arg_length < 1 || arg_length > 3) return ARGNUM;
+
+	Error err;
+	Atom errorType = head(args);
+
+	check_type(errorType, STRING, "string", "ERROR");
+	
+	std::string errorTypeString = to_string(errorType);
+	
+	if (errorTypeString == "SYNTAX") err.type = Error::SYNTAX;
+	else if (errorTypeString == "OK") err.type = Error::OK;
+	else if (errorTypeString == "ARGS") err.type = Error::ARGS;
+	else if (errorTypeString == "UNBOUND") err.type = Error::UNBOUND;
+	else if (errorTypeString == "TYPE") err.type = Error::TYPE;
+	else if (errorTypeString == "EMPTY") err.type = Error::EMPTY;
+	else return Error{ Error::SYNTAX, "Error type doesn't exist", "ERROR" };
+	
+	if (arg_length > 1)
+	{
+		Atom details = head(tail(args));
+
+		check_type(details, STRING, "string", "ERROR");
+
+		err.details = to_string(details);
+
+		if (arg_length == 3)
+		{
+			Atom from = head(tail(tail(args)));
+
+			check_type(from, STRING, "string", "ERROR");
+
+			err.from = to_string(from);
+		}
+	}
+
+	return err;
 }

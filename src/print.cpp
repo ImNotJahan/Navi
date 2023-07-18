@@ -106,7 +106,7 @@ void print_err(Error err)
 			break;
 
 		default:
-			std::cout << "Unkown error";
+			std::cout << "Unknown error";
 			break;
 	}
 	
