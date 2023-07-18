@@ -175,6 +175,34 @@ Atom copy_list(Atom list)
 	return atom;
 }
 
+Atom list_get(Atom list, int index)
+{
+	while (index-- != 0) list = tail(list);
+	return head(list);
+}
+
+void list_set(Atom list, int index, Atom value)
+{
+	while (index-- != 0) list = tail(list);
+	head(list) = value;
+}
+
+void list_reverse(Atom* list)
+{
+	Atom back = null;
+
+	while (!nullp((*list)))
+	{
+		Atom pair = tail((*list));
+		tail((*list)) = back;
+
+		back = *list;
+		*list = pair;
+	}
+
+	*list = back;
+}
+
 std::string to_string(Atom str)
 {
 	std::string temp = "";
@@ -186,4 +214,17 @@ std::string to_string(Atom str)
 	}
 
 	return temp;
+}
+
+// Data of expression to be pushed to stack
+Atom make_frame(Atom parent, Atom environment, Atom pending)
+{
+	// (parent env evaluated-op (pending-arg...) (evaluated-arg...) (body...))
+	return cons(parent, 
+		cons(environment, 
+		cons(null, // operation
+		cons(pending, 
+		cons(null, // arguments
+		cons(null, // body
+			null))))));
 }

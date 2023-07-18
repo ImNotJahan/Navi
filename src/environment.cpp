@@ -10,7 +10,7 @@ Error env_get(Atom environment, Atom symbol, Atom* result)
 {
 	Atom parent = head(environment);
 	Atom bindings = tail(environment);
-
+	
 	while (!nullp(bindings))
 	{
 		Atom binding = head(bindings);

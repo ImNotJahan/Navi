@@ -20,5 +20,10 @@ bool listp(Atom expr);
 
 int list_length(Atom list);
 Atom copy_list(Atom list);
+Atom list_get(Atom list, int index);
+void list_set(Atom list, int index, Atom value);
+void list_reverse(Atom* list);
 
 std::string to_string(Atom str);
+
+Atom make_frame(Atom parent, Atom environment, Atom pending);
