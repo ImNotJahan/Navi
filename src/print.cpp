@@ -103,6 +103,8 @@ void print_err(Error err)
 			break;
 
 		case Error::EMPTY:
+			if (err.details != "") std::cout << err.details;
+			return;
 			break;
 
 		default:

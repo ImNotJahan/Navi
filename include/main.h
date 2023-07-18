@@ -58,19 +58,23 @@ struct Pair
 	struct Atom atom[2];
 };
 
-// car
+// Get first value in pair. Equivalent to car
 #define head(p) (p.value.pair->atom[0])
-// cdr
+// Get second value in pair. Equivalent to cdr
 #define tail(p) (p.value.pair->atom[1])
 
+// Is it null?
 #define nullp(atom) (atom.type == Atom::NULL_)
 
 // Shorthand for make_symbol
 #define sym(value) make_symbol(new std::string(value))
 
+// Constants
+
 static const Atom null{ Atom::NULL_ };
 static const Atom true_{ Atom::BOOLEAN, true };
 static const Atom false_{ Atom::BOOLEAN, false };
+
 
 void print_expr(Atom atom);
 
@@ -79,15 +83,17 @@ struct Error
 	// Also update print_err in parser.cpp when adding error type
 	enum
 	{
-		OK = 0,
+		OK = 0, // If no error
 		SYNTAX,
 		UNBOUND,
 		ARGS,
 		TYPE,
-		EMPTY
+		EMPTY // Used for when there should be nothing printed, eg. comments & load
 	} type;
 
+	// Details about the error
 	std::string details = "";
+	// Where the error came from
 	std::string from = "";
 };
 
@@ -104,13 +110,9 @@ Atom env_create(Atom parent);
 Error env_get(Atom environment, Atom symbol, Atom* result);
 // Sets symbol to value in environment
 Error env_set(Atom environment, Atom symbol, Atom value);
-Error evaluate_expr(Atom expr, Atom environment, Atom* result);
 
+// Runs func with arguments
 Error apply(Atom func, Atom args, Atom* result);
 
+// Registers all the built-in functions to the provided environment
 void set_default_environment(Atom* env);
-
-Error evaluate_do_execution(Atom* stack, Atom* expr, Atom* environment);
-Error evaluate_do_binding(Atom* stack, Atom* expr, Atom* environment);
-Error evaluate_do_applying(Atom* stack, Atom* expr, Atom* environment, Atom* result);
-Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* result);

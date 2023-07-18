@@ -74,6 +74,9 @@
     <ClInclude Include="include\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\evaluate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="navi\library.navi">

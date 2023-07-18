@@ -1,4 +1,5 @@
 #include "../include/main.h"
+#include "../include/evaluate.h"
 #include "../include/data.h"
 #include "../include/library.h"
 #include "../include/garbage_collection.h"
@@ -129,9 +130,10 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 
 					if (head(args).type != Atom::STRING) return Error{ Error::TYPE, "Expected string", "LOAD" };
 
-					interpret_file(environment, to_string(head(args)), LogLevel::ERROR_ONLY);
+					std::string path = to_string(head(args));
+					interpret_file(environment, path, LogLevel::ERROR_ONLY);
 
-					err = Error{ Error::EMPTY };
+					err = Error{ Error::EMPTY, "Loaded file " + path};
 					continue;
 				}
 				else goto push;

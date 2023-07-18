@@ -1,10 +1,35 @@
 #include "../include/main.h"
 #include "../include/functions.h"
 #include "../include/library.h"
+#include "../include/evaluate.h"
+
 #include <iostream>
 
-int main()
+int main(int argc, char** argv)
 {
+	std::string library_path = "navi/library.navi";
+	std::string program_path = "";
+
+	// Starts at 1 as the file (navi.exe) counts as one
+	// Also increments by two since arguments and values come in pairs
+	for (int i = 1; i < argc; i += 2)
+	{
+		// There should be a value to each argument
+		if (argc < i + 1)
+		{
+			std::cout << "Incorrect arguments";
+			return 1;
+		}
+
+		if (strcmp(argv[i], "--library-path") == 0) library_path = argv[i + 1];
+		else if (strcmp(argv[i], "--program") == 0) program_path = argv[i + 1];
+		else
+		{
+			std::cout << "Unknown argument";
+			return 2;
+		}
+	}
+
 	std::string input;
 
 	Atom env;
@@ -12,11 +37,21 @@ int main()
 
 	set_default_environment(&env);
 
-	interpret_file(env, "navi/library.navi", LogLevel::ERROR_ONLY);
+	interpret_file(env, library_path, LogLevel::ERROR_ONLY);
 
+	// If a program is specified, run it then exit
+	if (program_path != "")
+	{
+		interpret_file(env, program_path, LogLevel::ERROR_ONLY);
+
+		return 0;
+	}
+
+	// Otherwise start REPL
 	std::cout << "> ";
 	std::getline(std::cin, input);
 
+	// End REPL if no input
 	while (input != "")
 	{
 		Error err;

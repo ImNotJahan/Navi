@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\data.h" />
+    <ClInclude Include="include\evaluate.h" />
     <ClInclude Include="include\functions.h" />
     <ClInclude Include="include\garbage_collection.h" />
     <ClInclude Include="include\library.h" />

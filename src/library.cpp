@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../include/main.h"
 #include "../include/library.h"
+#include "../include/evaluate.h"
 
 std::string read_file(std::string path)
 {
