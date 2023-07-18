@@ -46,11 +46,7 @@
 (set (hhead x) (head (head x)))
 (set (hail x) (head (tail x)))
 
-~ this is a comment
-
-| does this
-work? |
-
+~ = function that can compair different types without an error
 (set (u= a b) 
     (if (= (type a) (type b))
         (= a b)
@@ -101,3 +97,25 @@ work? |
 		(if (!= 0 index)
 			(get (tail list) (- index 1))
 			(head list))))
+			
+(set (remainder a b)
+	(set (loop a b c)
+		(if (< b 0)
+			(if (< a 0)
+				(if (< (+ c b) a)
+					(* (- a c) -1)
+					(loop a b (+ c b)))
+				(if (> (- c b) a)
+					(* (- a c) -1)
+					(loop a b (- c b))))
+			(if (< a 0)
+				(if (< (- c b) a)
+					(- a c)
+					(loop a b (- c b)))
+				(if (> (+ c b) a)
+					(- a c)
+					(loop a b (+ c b))))))
+	(loop a b 0))
+	
+(set (even? x) (= (remainder x 2) 0))
+(set (odd? x) (! (even? x)))
