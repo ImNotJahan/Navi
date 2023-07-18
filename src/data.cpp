@@ -219,7 +219,7 @@ std::string to_string(Atom str)
 // Data of expression to be pushed to stack
 Atom make_frame(Atom parent, Atom environment, Atom pending)
 {
-	// (parent env evaluated-op (pending-arg...) (evaluated-arg...) (body...))
+	// (parent environment evaluated_operation (pending_arguments...) (evaluated_arguments...) (body...))
 	return cons(parent, 
 		cons(environment, 
 		cons(null, // operation

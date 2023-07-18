@@ -36,7 +36,7 @@ struct Atom
 		MACRO,
 		STRING,
 		BIGNUM, // to support
-		RATIO // to support
+		RATIO
 	} type;
 
 	union

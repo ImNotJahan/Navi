@@ -283,3 +283,55 @@ Error function_print(Atom args, Atom* result)
 
 	return NOERR;
 }
+
+Error function_float(Atom args, Atom* result)
+{
+	check_args(args, 1);
+
+	Atom value = head(args);
+	Atom float_{ Atom::FLOAT };
+
+	if (value.type == value.FLOAT) float_.value.float_ = value.value.float_;
+	else if (value.type == value.INTEGER) float_.value.float_ = value.value.integer;
+	else if (value.type == value.RATIO) float_.value.float_ = (float)value.value.ratio.numerator / value.value.ratio.denominator;
+	else return Error{ Error::TYPE, "Expected number", "FLOAT"};
+
+	*result = float_;
+
+	return NOERR;
+}
+
+Error function_int(Atom args, Atom* result)
+{
+	check_args(args, 1);
+
+	Atom value = head(args);
+	Atom integer{ Atom::INTEGER };
+
+	if (value.type == value.FLOAT) integer.value.integer = value.value.float_;
+	else if (value.type == value.INTEGER) integer.value.integer = value.value.integer;
+	else if (value.type == value.RATIO) integer.value.integer = value.value.ratio.numerator / value.value.ratio.denominator;
+	else return Error{ Error::TYPE, "Expected number", "INT"};
+
+	*result = integer;
+
+	return NOERR;
+}
+
+Error function_ratio(Atom args, Atom* result)
+{
+	check_args(args, 2);
+
+	Atom numerator = head(args);
+	Atom denominator = head(tail(args));
+	Atom ratio{ Atom::RATIO };
+
+	if (!both_type(numerator, denominator, INTEGER)) return Error{ Error::TYPE, "Expected integers", "RATIO" };
+
+	ratio.value.ratio.numerator = numerator.value.integer;
+	ratio.value.ratio.denominator = denominator.value.integer;
+
+	*result = ratio;
+
+	return NOERR;
+}

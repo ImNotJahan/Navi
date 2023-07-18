@@ -23,6 +23,13 @@ Error function_or(Atom args, Atom* result);
 Error function_apply(Atom args, Atom* result);
 Error function_print(Atom args, Atom* result);
 
+// Create ratio
+Error function_ratio(Atom args, Atom* result);
+// Covert other number type to int
+Error function_int(Atom args, Atom* result);
+// Convert other number type to float
+Error function_float(Atom args, Atom* result);
+
 #define is_number(a) (a.type == Atom::INTEGER || a.type == Atom::FLOAT)
 
 #define both_type(a, b, t) (a.type == Atom::t && b.type == Atom::t)

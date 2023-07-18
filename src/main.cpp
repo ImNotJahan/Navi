@@ -54,4 +54,7 @@ void set_default_environment(Atom* env)
 	env_set(*env, sym("OR"), make_function(function_or));
 	env_set(*env, sym("APPLY"), make_function(function_apply));
 	env_set(*env, sym("PRINT"), make_function(function_print));
+	env_set(*env, sym("INT"), make_function(function_int));
+	env_set(*env, sym("FLOAT"), make_function(function_float));
+	env_set(*env, sym("RATIO"), make_function(function_ratio));
 }

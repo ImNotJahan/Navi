@@ -74,7 +74,7 @@ void print_expr(Atom atom)
 			break;
 
 		case Atom::RATIO:
-			std::cout << atom.value.ratio.numerator << " / " << atom.value.ratio.denominator;
+			std::cout << atom.value.ratio.numerator << ":" << atom.value.ratio.denominator;
 			break;
 
 		case Atom::BIGNUM: // add bignum as well
