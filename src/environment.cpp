@@ -25,7 +25,7 @@ Error env_get(Atom environment, Atom symbol, Atom* result)
 		bindings = tail(bindings);
 	}
 
-	if (nullp(parent)) return Error{ Error::UNBOUND, ("No symbol: " + *symbol.value.symbol->c_str())};
+	if (nullp(parent)) return Error{ Error::UNBOUND, ("No symbol " + *symbol.value.symbol)};
 
 	return env_get(parent, symbol, result); // Tries in parent environment
 }
