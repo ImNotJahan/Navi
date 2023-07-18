@@ -40,7 +40,7 @@ Error function_error(Atom args, Atom* result);
 #define both_type(a, b, t) (a.type == Atom::t && b.type == Atom::t)
 #define type_eq(a, b, t) (a.value.t == b.value.t) ? true_ : false_
 
-#define check_args(args, a) if (list_length(args) != a) return ARGNUM
+#define check_args(args, a, from) if (list_length(args) != a) return ARGNUM(from)
 
 #define tf ? true_ : false_
 

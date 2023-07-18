@@ -4,7 +4,7 @@
 
 Error function_head(Atom args, Atom* result)
 {
-	check_args(args, 1);
+	check_args(args, 1, "HEAD");
 
 	if (nullp(head(args))) *result = null;
 	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING)) 
@@ -16,7 +16,7 @@ Error function_head(Atom args, Atom* result)
 
 Error function_tail(Atom args, Atom* result)
 {
-	check_args(args, 1);
+	check_args(args, 1, "TAIL");
 
 	if (nullp(head(args))) *result = null;
 	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING))
@@ -33,7 +33,7 @@ Error function_tail(Atom args, Atom* result)
 
 Error function_cons(Atom args, Atom* result)
 {
-	check_args(args, 2);
+	check_args(args, 2, "CONS");
 
 	*result = cons(head(args), head(tail(args)));
 
@@ -45,7 +45,7 @@ Error arithmetic(const std::function<float(float, float)>& f, Atom args, Atom *r
 {
 	Atom a, b;
 
-	check_args(args, 2);
+	check_args(args, 2, "ARITHMETIC");
 
 	a = head(args);
 	b = head(tail(args));
@@ -109,7 +109,7 @@ Error function_divide(Atom args, Atom* result)
 
 Error function_type(Atom args, Atom* result)
 {
-	check_args(args, 1);
+	check_args(args, 1, "TYPE");
 
 	switch(head(args).type)
 	{
@@ -174,7 +174,7 @@ Error function_type(Atom args, Atom* result)
 
 Error function_eq(Atom args, Atom* result)
 {
-	check_args(args, 2);
+	check_args(args, 2, "=");
 
 	Atom a, b;
 
@@ -211,7 +211,7 @@ Error function_eq(Atom args, Atom* result)
 
 Error function_less(Atom args, Atom* result)
 {
-	check_args(args, 2);
+	check_args(args, 2, "<");
 
 	Atom a, b;
 	a = head(args);
@@ -230,7 +230,7 @@ Error function_less(Atom args, Atom* result)
 
 Error function_and(Atom args, Atom* result)
 {
-	check_args(args, 2);
+	check_args(args, 2, "AND");
 
 	Atom a, b;
 	a = head(args);
@@ -245,7 +245,7 @@ Error function_and(Atom args, Atom* result)
 
 Error function_or(Atom args, Atom* result)
 {
-	check_args(args, 2);
+	check_args(args, 2, "OR");
 
 	Atom a, b;
 	a = head(args);
@@ -262,7 +262,7 @@ Error function_apply(Atom args, Atom* result)
 {
 	Atom fn;
 
-	check_args(args, 2);
+	check_args(args, 2, "APPLY");
 
 	fn = head(args);
 	args = head(tail(args));
@@ -276,7 +276,7 @@ Error function_print(Atom args, Atom* result)
 {
 	Atom expr;
 
-	check_args(args, 1);
+	check_args(args, 1, "PRINT");
 	expr = head(args);
 
 	print_expr(expr);
@@ -287,7 +287,7 @@ Error function_print(Atom args, Atom* result)
 
 Error function_float(Atom args, Atom* result)
 {
-	check_args(args, 1);
+	check_args(args, 1, "FLOAT");
 
 	Atom value = head(args);
 	Atom float_{ Atom::FLOAT };
@@ -304,7 +304,7 @@ Error function_float(Atom args, Atom* result)
 
 Error function_int(Atom args, Atom* result)
 {
-	check_args(args, 1);
+	check_args(args, 1, "INT");
 
 	Atom value = head(args);
 	Atom integer{ Atom::INTEGER };
@@ -321,7 +321,7 @@ Error function_int(Atom args, Atom* result)
 
 Error function_ratio(Atom args, Atom* result)
 {
-	check_args(args, 2);
+	check_args(args, 2, "RATIO");
 
 	Atom numerator = head(args);
 	Atom denominator = head(tail(args));
@@ -339,7 +339,7 @@ Error function_ratio(Atom args, Atom* result)
 
 Error function_numerator(Atom args, Atom* result)
 {
-	check_args(args, 1);
+	check_args(args, 1, "NUMERATOR");
 
 	Atom ratio = head(args);
 	Atom numerator{ Atom::INTEGER };
@@ -354,7 +354,7 @@ Error function_numerator(Atom args, Atom* result)
 
 Error function_denominator(Atom args, Atom* result)
 {
-	check_args(args, 1);
+	check_args(args, 1, "DENOMINATOR");
 
 	Atom ratio = head(args);
 	Atom denominator{ Atom::INTEGER };
@@ -371,7 +371,7 @@ Error function_error(Atom args, Atom* result)
 {
 	const int arg_length = list_length(args);
 
-	if (arg_length < 1 || arg_length > 3) return ARGNUM;
+	if (arg_length < 1 || arg_length > 3) return ARGNUM("ERROR");
 
 	Error err;
 	Atom errorType = head(args);

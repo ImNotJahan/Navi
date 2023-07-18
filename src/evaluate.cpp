@@ -39,7 +39,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 
 				if (*operation.value.symbol == "QUOTE")
 				{
-					if (list_length(args) != 1) return ARGNUM;
+					if (list_length(args) != 1) return ARGNUM("QUOTE");
 
 					*result = head(args);
 				}
@@ -47,7 +47,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				{
 					Atom symbol;
 
-					if (list_length(args) < 2) return ARGNUM;
+					if (list_length(args) < 2) return ARGNUM("SET");
 
 					symbol = head(args);
 					if (symbol.type == Atom::PAIR)
@@ -63,7 +63,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					}
 					else if (symbol.type == Atom::SYMBOL)
 					{
-						if (list_length(args) != 2) return ARGNUM;
+						if (list_length(args) != 2) return ARGNUM("SET");
 
 						stack = make_frame(stack, environment, null);
 						list_set(stack, 2, operation);
@@ -77,13 +77,13 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				}
 				else if (*operation.value.symbol == "LAMBDA")
 				{
-					if (list_length(args) < 2) return ARGNUM;
+					if (list_length(args) < 2) return ARGNUM("LAMBDA");
 
 					err = make_closure(environment, head(args), tail(args), result);
 				}
 				else if (*operation.value.symbol == "IF")
 				{
-					if (list_length(args) != 3) return ARGNUM;
+					if (list_length(args) != 3) return ARGNUM("IF");
 
 					stack = make_frame(stack, environment, tail(args));
 					list_set(stack, 2, operation);
@@ -95,7 +95,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				{
 					Atom name, macro;
 
-					if (list_length(args) < 2) return ARGNUM;
+					if (list_length(args) < 2) return ARGNUM("MACRO");
 
 					if (head(args).type != Atom::PAIR) return Error{ Error::SYNTAX };
 
@@ -115,7 +115,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				}
 				else if (*operation.value.symbol == "APPLY")
 				{
-					if (list_length(args) != 2) return ARGNUM;
+					if (list_length(args) != 2) return ARGNUM("APPLY");
 
 					stack = make_frame(stack, environment, tail(args));
 					list_set(stack, 2, operation);
@@ -125,7 +125,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				}
 				else if (*operation.value.symbol == "LOAD")
 				{
-					if (list_length(args) != 1) return ARGNUM;
+					if (list_length(args) != 1) return ARGNUM("LOAD");
 
 					if (head(args).type != Atom::STRING) return Error{ Error::TYPE, "Expected string", "LOAD" };
 
@@ -181,7 +181,7 @@ Error apply(Atom func, Atom args, Atom* result)
 			break;
 		}
 
-		if (nullp(args)) return ARGNUM;
+		if (nullp(args)) return ARGNUM("APPLY");
 
 		env_set(environment, head(arg_names), head(args));
 
@@ -189,7 +189,7 @@ Error apply(Atom func, Atom args, Atom* result)
 		args = tail(args);
 	}
 
-	if (!nullp(args)) return ARGNUM;
+	if (!nullp(args)) return ARGNUM("APPLY");
 
 	// Evaluate closure body
 	while (!nullp(body))
@@ -248,14 +248,14 @@ Error evaluate_do_binding(Atom* stack, Atom* expr, Atom* environment)
 			break;
 		}
 
-		if (nullp(args)) return ARGNUM;
+		if (nullp(args)) return ARGNUM("EVALUATE_DO_BINDING");
 
 		env_set(*environment, head(arg_names), head(args));
 		arg_names = tail(arg_names);
 		args = tail(args);
 	}
 
-	if (!nullp(args)) return ARGNUM;
+	if (!nullp(args)) return ARGNUM("EVALUATE_DO_BINDING");
 	
 	list_set(*stack, 4, null); // finished binding args so clear from frame
 	
