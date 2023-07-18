@@ -335,3 +335,33 @@ Error function_ratio(Atom args, Atom* result)
 
 	return NOERR;
 }
+
+Error function_numerator(Atom args, Atom* result)
+{
+	check_args(args, 1);
+
+	Atom ratio = head(args);
+	Atom numerator{ Atom::INTEGER };
+
+	if (ratio.type != Atom::RATIO) return Error{ Error::TYPE, "Expected ratio", "NUMERATOR" };
+
+	numerator.value.integer = ratio.value.ratio.numerator;
+	*result = numerator;
+
+	return NOERR;
+}
+
+Error function_denominator(Atom args, Atom* result)
+{
+	check_args(args, 1);
+
+	Atom ratio = head(args);
+	Atom denominator{ Atom::INTEGER };
+
+	if (ratio.type != Atom::RATIO) return Error{ Error::TYPE, "Expected ratio", "DENOMINATOR" };
+
+	denominator.value.integer = ratio.value.ratio.denominator;
+	*result = denominator;
+
+	return NOERR;
+}

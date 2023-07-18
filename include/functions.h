@@ -30,6 +30,9 @@ Error function_int(Atom args, Atom* result);
 // Convert other number type to float
 Error function_float(Atom args, Atom* result);
 
+Error function_numerator(Atom args, Atom* result);
+Error function_denominator(Atom args, Atom* result);
+
 #define is_number(a) (a.type == Atom::INTEGER || a.type == Atom::FLOAT)
 
 #define both_type(a, b, t) (a.type == Atom::t && b.type == Atom::t)
