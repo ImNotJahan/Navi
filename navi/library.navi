@@ -124,3 +124,10 @@
 	(set (gcd_inner a b)
 		(if (= b 0) a (gcd_inner b (remainder a b))))
 	(abs (fold_left gcd_inner 0 xs)))
+	
+(set (remove_decimal f)
+	(set (remove_decimal_helper f i)
+		(if (= (int f) f)
+			(cons (int f) i)
+			(remove_decimal_helper (* f 10) (+ i 1))))
+	(remove_decimal_helper f 0))

@@ -15,3 +15,11 @@
 (set (/ratio a b) 
 	(let ((nume (* (numerator a) (denominator b))) (deno (* (denominator a) (numerator b))))
 		(ratio (/ nume (gcd nume deno)) (/ deno (gcd nume deno)))))
+		
+(set (simplify_ratio r) 
+	(let ((nume (numerator r)) (deno (denominator r)))
+		(ratio (/ nume (gcd nume deno)) (/ deno (gcd nume deno)))))
+	
+(set (ftor f)
+	(let ((r (remove_decimal f)))
+		(simplify_ratio (ratio (head r) (exp 10 (tail r))))))

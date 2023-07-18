@@ -124,6 +124,7 @@ Atom make_bignum() // Implement this
 {
 	Atom atom = Atom{ Atom::BIGNUM };
 
+
 	return atom;
 }
 
