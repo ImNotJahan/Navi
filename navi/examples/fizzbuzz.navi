@@ -1,0 +1,14 @@
+(set (fizzbuzz x)
+	(set (fizzbuzz_helper x i)
+		(if (> i x)
+			(error "OK")
+			(let ((fizz (= (remainder i 3) 0)) (buzz (= (remainder i 5) 0)))
+				(if (and fizz buzz) 
+					(print "fizzbuzz")
+					(if fizz 
+						(print "fizz")
+						(if buzz
+							(print "buzz")
+							(print i))))
+				(fizzbuzz_helper x (+ 1 i)))))
+	(fizzbuzz_helper x 1))
