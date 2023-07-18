@@ -284,10 +284,10 @@ Error evaluate_do_applying(Atom* stack, Atom* expr, Atom* environment, Atom* res
 			*stack = make_frame(*stack, *environment, null);
 
 			operation = head(args);
-			args = tail(head(args));
+			args = head(tail(args));
 
 			if (!listp(args)) 
-				return Error{ Error::SYNTAX, "Args not provided as list", "EVALUATE_DO_APPLY"};
+				return Error{ Error::SYNTAX, "Args not provided as list", "EVALUATE_DO_APPLYING"};
 
 			list_set(*stack, 2, operation);
 			list_set(*stack, 4, args);
@@ -302,7 +302,7 @@ Error evaluate_do_applying(Atom* stack, Atom* expr, Atom* environment, Atom* res
 		return NOERR;
 	}
 	else if (operation.type != Atom::CLOSURE) 
-		return Error{ Error::TYPE, "Function or closure expected", "EVALUATE_DO_APPLY" };
+		return Error{ Error::TYPE, "Function or closure expected", "EVALUATE_DO_APPLYING" };
 	
 	return evaluate_do_binding(stack, expr, environment);
 }
