@@ -164,6 +164,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 	mark(environment); 
 	mark(expr); 
 	mark(stack); 
+	mark(*result); 
 	collect();
 
 	return err;
