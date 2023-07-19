@@ -1,6 +1,5 @@
 #include "../include/main.h"
 #include "../include/functions.h"
-#include <map>
 
 Error function_head(Atom args, Atom* result)
 {
@@ -31,9 +30,9 @@ Error function_tail(Atom args, Atom* result)
 	return NOERR;
 }
 
-Error function_cons(Atom args, Atom* result)
+Error function_pair(Atom args, Atom* result)
 {
-	check_args(args, 2, "CONS");
+	check_args(args, 2, "PAIR");
 
 	*result = cons(head(args), head(tail(args)));
 
@@ -109,7 +108,7 @@ Error function_divide(Atom args, Atom* result)
 
 Error function_type(Atom args, Atom* result)
 {
-	check_args(args, 1, "TYPE");
+	check_args(args, 1, "TYPE_OF");
 
 	switch(head(args).type)
 	{
@@ -149,8 +148,8 @@ Error function_type(Atom args, Atom* result)
 			*result = sym("BOOL");
 			break;
 
-		case Atom::MACRO:
-			*result = sym("MACRO");
+		case Atom::EXPANSION:
+			*result = sym("EXPANSION");
 			break;
 
 		case Atom::STRING:
@@ -272,15 +271,15 @@ Error function_apply(Atom args, Atom* result)
 	return apply(fn, args, result);
 }
 
-Error function_print(Atom args, Atom* result)
+Error function_say(Atom args, Atom* result)
 {
 	Atom expr;
 
-	check_args(args, 1, "PRINT");
+	check_args(args, 1, "SAY");
 	expr = head(args);
 
-	print_expr(expr);
-	print_expr(make_character('\n'));
+	say_expr(expr);
+	say_expr(make_character('\n'));
 
 	return NOERR;
 }

@@ -4,11 +4,11 @@
 			(error "OK")
 			(let ((fizz (= (remainder i 3) 0)) (buzz (= (remainder i 5) 0)))
 				(if (and fizz buzz) 
-					(print "fizzbuzz")
+					(say "fizzbuzz")
 					(if fizz 
-						(print "fizz")
+						(say "fizz")
 						(if buzz
-							(print "buzz")
-							(print i))))
+							(say "buzz")
+							(say i))))
 				(fizzbuzz_helper x (+ 1 i)))))
 	(fizzbuzz_helper x 1))

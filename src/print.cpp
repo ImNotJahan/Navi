@@ -2,7 +2,7 @@
 #include <iostream>
 #include "../include/data.h"
 
-void print_expr(Atom atom)
+void say_expr(Atom atom)
 {
 	switch (atom.type)
 	{
@@ -13,7 +13,7 @@ void print_expr(Atom atom)
 		case Atom::PAIR:
 			std::cout << "(";
 
-			print_expr(head(atom));
+			say_expr(head(atom));
 			atom = tail(atom);
 
 			while (!nullp(atom))
@@ -22,14 +22,14 @@ void print_expr(Atom atom)
 				{
 					std::cout << " ";
 
-					print_expr(head(atom));
+					say_expr(head(atom));
 					atom = tail(atom);
 				}
 				else
 				{
 					std::cout << " . ";
 
-					print_expr(atom);
+					say_expr(atom);
 					break;
 				}
 			}
@@ -65,8 +65,8 @@ void print_expr(Atom atom)
 			std::cout << (atom.value.boolean ? "TRUE" : "FALSE");
 			break;
 
-		case Atom::MACRO:
-			std::cout << "MACRO";
+		case Atom::EXPANSION:
+			std::cout << "EXPANSION";
 			break;
 
 		case Atom::STRING:
@@ -82,7 +82,7 @@ void print_expr(Atom atom)
 	}
 }
 
-void print_err(Error err)
+void say_err(Error err)
 {
 	switch (err.type)
 	{

@@ -2,11 +2,11 @@
 
 (set (> a b) (< b a))
 
-(set (! p) (= p false))
-(set (!= a b) (! (= a b)))
+(set (not p) (= p false))
+(set (not= a b) (not (= a b)))
 
-(set (null? var) (= (type var) null))
-(set (pair? var) (= (type var) 'PAIR))
+(set (null? var) (= (type_of var) null))
+(set (pair? var) (= (type_of var) 'PAIR))
 
 (set (positive? var) (> var 0))
 
@@ -23,36 +23,36 @@
 (set (square num) (exp num 2))
 
 (set (fold_left proc init list)
-    (if (! (null? list))
+    (if (not (null? list))
         (fold_left proc
             (proc init (head list))
             (tail list))
     init))
 
 (set (fold_right proc init list)
-	(if (! (null? list))
+	(if (not (null? list))
 		(proc (head list)
 			(fold_right proc init (tail list)))
 	init))
 
 (set (list . items)
-    (fold_right cons null items))
+    (fold_right pair null items))
 
 (set (reverse list)
-    (fold_left (lambda (a x) (cons x a)) null list))
+    (fold_left (lambda (a x) (pair x a)) null list))
 
-(set (append a b) (fold_right cons b a))
+(set (append a b) (fold_right pair b a))
 
 (set (hhead x) (head (head x)))
 (set (hail x) (head (tail x)))
 
-~ = function that can compair different types without an error
+~ = function that can compair different type_ofs without an error
 (set (u= a b) 
-    (if (= (type a) (type b))
+    (if (= (type_of a) (type_of b))
         (= a b)
         false))
 
-(macro (quasiquote x)
+(expansion (quasiquote x)
     (if (pair? x)
         (if (u= (head x) 'unquote)
             (hail x)
@@ -60,44 +60,44 @@
                 (list 'append
                     (hail (head x))
                     (list 'quasiquote (tail x)))
-                (list 'cons
+                (list 'pair
                     (list 'quasiquote (head x))
                     (list 'quasiquote (tail x)))))
         (list 'quote x)))
 
 (set (unary-map proc list)
-    (fold_right (lambda (x rest) (cons (proc x) rest))
+    (fold_right (lambda (x rest) (pair (proc x) rest))
         null
         list))
 
-(set (!null? var) (! (null? var)))
+(set (non_null? var) (not (null? var)))
 
 (set (map proc . arg-lists)
-	(if (!null? (head arg-lists))
-		(cons (apply proc (unary-map head arg-lists))
-			(apply map (cons proc
+	(if (non_null? (head arg-lists))
+		(pair (apply proc (unary-map head arg-lists))
+			(apply map (pair proc
 				(unary-map tail arg-lists))))
 		null))
 
-(macro (++ var) `(set ,var (+ ,var 1)))
-(macro (-- var) `(set ,var (- ,var 1)))
+(expansion (++ var) ;(set ,var (+ ,var 1)))
+(expansion (-- var) ;(set ,var (- ,var 1)))
 
-(macro (+= var value) `(set ,var (+ ,var ,value)))
-(macro (-= var value) `(set ,var (- ,var ,value)))
-(macro (*= var value) `(set ,var (* ,var ,value)))
-(macro (/= var value) `(set ,var (/ ,var ,value)))
+(expansion (+= var value) ;(set ,var (+ ,var ,value)))
+(expansion (-= var value) ;(set ,var (- ,var ,value)))
+(expansion (*= var value) ;(set ,var (* ,var ,value)))
+(expansion (/= var value) ;(set ,var (/ ,var ,value)))
 
-(macro (let defs . body)
-    `((lambda ,(map head defs) ,@body)
+(expansion (let defs . body)
+    ;((lambda ,(map head defs) ,@body)
         ,@(map hail defs)))
 		
 (set (get list index) 
 	(if (null? list)
 		'OUT_OF_BOUNDS
-		(if (!= 0 index)
+		(if (not= 0 index)
 			(get (tail list) (- index 1))
 			(head list))))
-			
+		
 (set (remainder a b)
 	(set (loop a b c)
 		(if (< b 0)
@@ -118,7 +118,7 @@
 	(loop a b 0))
 	
 (set (even? x) (= (remainder x 2) 0))
-(set (odd? x) (! (even? x)))
+(set (odd? x) (not (even? x)))
 
 (set (gcd . xs)
 	(set (gcd_inner a b)
@@ -128,6 +128,6 @@
 (set (remove_decimal f)
 	(set (remove_decimal_helper f i)
 		(if (= (int f) f)
-			(cons (int f) i)
+			(pair (int f) i)
 			(remove_decimal_helper (* f 10) (+ i 1))))
 	(remove_decimal_helper f 0))

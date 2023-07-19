@@ -32,12 +32,14 @@ void interpret_file(Atom environment, std::string path, LogLevel logLevel)
 		if (err.type && logLevel >= LogLevel::ERROR_ONLY)
 		{
 			std::cout << "Error in expression: " << std::endl;
-			print_expr(expr);
+			say_expr(expr);
+			std::cout << std::endl;
+			say_err(err);
 			std::cout << std::endl;
 		}
 		else if(logLevel == LogLevel::ALL)
 		{
-			print_expr(result);
+			say_expr(result);
 			std::cout << std::endl;
 		}
 	}

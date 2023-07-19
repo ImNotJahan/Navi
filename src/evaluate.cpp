@@ -92,23 +92,23 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					expr = head(args);
 					continue;
 				}
-				else if (*operation.value.symbol == "MACRO")
+				else if (*operation.value.symbol == "EXPANSION")
 				{
 					Atom name, macro;
 
-					if (list_length(args) < 2) return ARGNUM("MACRO");
+					if (list_length(args) < 2) return ARGNUM("EXPANSION");
 
 					if (head(args).type != Atom::PAIR) return Error{ Error::SYNTAX };
 
 					name = head(head(args));
 					if (name.type != Atom::SYMBOL)
-						return Error{ Error::TYPE, "Expected symbol for name", "MACRO" };
+						return Error{ Error::TYPE, "Expected symbol for name", "EXPANSION" };
 
 					err = make_closure(environment, tail(head(args)), tail(args), &macro);
 
 					if (!err.type)
 					{
-						macro.type = Atom::MACRO;
+						macro.type = Atom::EXPANSION;
 						*result = name;
 
 						env_set(environment, name, macro);
@@ -325,7 +325,7 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 		operation = *result;
 		list_set(*stack, 2, operation);
 		
-		if (operation.type == Atom::MACRO)
+		if (operation.type == Atom::EXPANSION)
 		{
 			// Don't evaluate macro arguments
 			args = list_get(*stack, 3);
@@ -363,7 +363,7 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 		}
 		else goto store_arg;
 	}
-	else if (operation.type == Atom::MACRO)
+	else if (operation.type == Atom::EXPANSION)
 	{
 		*expr = *result;
 		*stack = head((*stack));

@@ -7,7 +7,7 @@ void mark(Atom root)
 
 	if (!(root.type == Atom::PAIR
 		|| root.type == Atom::CLOSURE
-		|| root.type == Atom::MACRO)) return;
+		|| root.type == Atom::EXPANSION)) return;
 
 	allocation = (Allocation*)((char*)root.value.pair -
 		offsetof(Allocation, pair));

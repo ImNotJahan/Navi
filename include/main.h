@@ -18,7 +18,7 @@ struct Atom
 	/* 
 		When adding a type to this list, also update 
 			function_type in functions.cpp
-			print_expr in print.cpp
+			say_expr in print.cpp
 			parser.cpp
 		And create a make_type in data.cpp
 	*/
@@ -33,7 +33,7 @@ struct Atom
 		FUNCTION,
 		CLOSURE,
 		BOOLEAN,
-		MACRO,
+		EXPANSION,
 		STRING,
 		BIGNUM, // to support
 		RATIO
@@ -76,11 +76,11 @@ static const Atom true_{ Atom::BOOLEAN, true };
 static const Atom false_{ Atom::BOOLEAN, false };
 
 
-void print_expr(Atom atom);
+void say_expr(Atom atom);
 
 struct Error
 {
-	// Also update print_err in parser.cpp when adding error type
+	// Also update say_err in parser.cpp when adding error type
 	enum
 	{
 		OK = 0, // If no error
@@ -103,7 +103,7 @@ struct Error
 // Reads and then sends expression to correct function
 Error read_expr(std::string input, std::string* end, Atom* result);
 
-void print_err(Error err);
+void say_err(Error err);
 
 Atom env_create(Atom parent);
 // Searches environment and parent environments for symbol

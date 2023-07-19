@@ -83,7 +83,7 @@ Error read_expr(std::string input, std::string* end, Atom* result)
 
 		return read_expr(*end, end, &head(tail((*result))));
 	}
-	if (token[0] == '`')
+	if (token[0] == ';')
 	{
 		*result = cons(sym("QUASIQUOTE"), cons(null, null));
 

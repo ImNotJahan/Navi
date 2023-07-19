@@ -6,7 +6,7 @@ Error arithmetic(const std::function<float(float, float)>& f, Atom args, Atom* r
 
 Error function_head(Atom args, Atom* result);
 Error function_tail(Atom args, Atom* result);
-Error function_cons(Atom args, Atom* result);
+Error function_pair(Atom args, Atom* result);
 
 Error function_add(Atom args, Atom* result);
 Error function_subtract(Atom args, Atom* result);
@@ -21,7 +21,7 @@ Error function_and(Atom args, Atom* result);
 Error function_or(Atom args, Atom* result);
 
 Error function_apply(Atom args, Atom* result);
-Error function_print(Atom args, Atom* result);
+Error function_say(Atom args, Atom* result);
 
 // Create ratio
 Error function_ratio(Atom args, Atom* result);

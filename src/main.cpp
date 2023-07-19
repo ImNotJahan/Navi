@@ -61,8 +61,8 @@ int main(int argc, char** argv)
 
 		if (!err.type) err = evaluate_expr(expr, env, &result);
 
-		if (!err.type) print_expr(result);
-		else print_err(err);
+		if (!err.type) say_expr(result);
+		else say_err(err);
 
 		std::cout << std::endl;
 
@@ -77,18 +77,18 @@ void set_default_environment(Atom* env)
 {
 	env_set(*env, sym("HEAD"), make_function(function_head));
 	env_set(*env, sym("TAIL"), make_function(function_tail));
-	env_set(*env, sym("CONS"), make_function(function_cons));
+	env_set(*env, sym("PAIR"), make_function(function_pair));
 	env_set(*env, sym("+"), make_function(function_add));
 	env_set(*env, sym("-"), make_function(function_subtract));
 	env_set(*env, sym("*"), make_function(function_multiply));
 	env_set(*env, sym("/"), make_function(function_divide));
-	env_set(*env, sym("TYPE"), make_function(function_type));
+	env_set(*env, sym("TYPE_OF"), make_function(function_type));
 	env_set(*env, sym("="), make_function(function_eq));
 	env_set(*env, sym("<"), make_function(function_less));
 	env_set(*env, sym("AND"), make_function(function_and));
 	env_set(*env, sym("OR"), make_function(function_or));
 	env_set(*env, sym("APPLY"), make_function(function_apply));
-	env_set(*env, sym("PRINT"), make_function(function_print));
+	env_set(*env, sym("SAY"), make_function(function_say));
 	env_set(*env, sym("INT"), make_function(function_int));
 	env_set(*env, sym("FLOAT"), make_function(function_float));
 	env_set(*env, sym("RATIO"), make_function(function_ratio));
