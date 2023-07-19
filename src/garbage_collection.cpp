@@ -9,13 +9,14 @@ void mark(Atom root)
 
 		if (!(root.type == Atom::PAIR ||
 			root.type == Atom::CLOSURE ||
-			root.type == Atom::EXPANSION)) return;
+			root.type == Atom::EXPANSION ||
+			root.type == Atom::STRING)) return;
 
 		alloc = (Allocation*)((char*)root.value.pair - offsetof(Allocation, pair));
 
 		if (alloc->mark) return; // Reached an already marked portion
 
-		alloc->mark = 1; // Since something could still access this, mark it to avoid deletion
+		alloc->mark = true; // Since something could still access this, mark it to avoid deletion
 
 		mark(tail(root));
 		root = head(root);

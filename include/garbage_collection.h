@@ -9,8 +9,9 @@ void mark(Atom root);
 struct Allocation
 {
 	struct Pair pair;
-	int mark : 1;
+	bool mark : true;
 	struct Allocation* next;
 };
 
-#define MAX_ITER 100000
+size_t getBytesAllocated();
+size_t getNextCollection();

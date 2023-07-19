@@ -4,6 +4,9 @@
 
 Allocation* global_allocations = NULL;
 
+static size_t bytesAllocated = 0;
+static size_t nextCollection = 1024 * 1024;
+
 // Implementing here so global_allocations only has to be referenced in data.cpp
 void collect()
 {
@@ -19,21 +22,27 @@ void collect()
 		if (!alloc->mark)
 		{
 			*pointer = alloc->next;
+			bytesAllocated -= sizeof(alloc);
 			delete alloc;
 		}
 		else
 		{
+			alloc->mark = false;
 			pointer = &alloc->next;
 		}
 	}
 
-	/* Clear marks */
-	alloc = global_allocations;
-	while (alloc != NULL)
-	{
-		alloc->mark = 0;
-		alloc = alloc->next;
-	}
+	nextCollection = bytesAllocated * 1.15; // After a bit of testing this value seemed good
+}
+
+size_t getBytesAllocated()
+{
+	return bytesAllocated;
+}
+
+size_t getNextCollection()
+{
+	return nextCollection;
 }
 
 Atom construct(Atom head, Atom tail)
@@ -50,6 +59,8 @@ Atom construct(Atom head, Atom tail)
 
 	head(pair) = head;
 	tail(pair) = tail;
+
+	bytesAllocated += sizeof(alloc);
 
 	return pair;
 }
