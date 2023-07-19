@@ -3,44 +3,19 @@
 
 void mark(Atom root)
 {
-	Allocation* allocation;
+	Allocation* alloc;
 
-	if (!(root.type == Atom::PAIR
-		|| root.type == Atom::CLOSURE
-		|| root.type == Atom::EXPANSION)) return;
+	if (!(root.type == Atom::PAIR || 
+		root.type == Atom::CLOSURE || 
+		root.type == Atom::EXPANSION)) return;
+	
+	alloc = (Allocation*) ((char*)root.value.pair - offsetof(Allocation, pair));
+	
+	if (alloc->mark) return; // Reached an already marked portion
+	
+	alloc->mark = 1; // Since something could still access this, mark it to avoid deletion
 
-	allocation = (Allocation*)((char*)root.value.pair -
-		offsetof(Allocation, pair));
-
-	if (allocation->mark) return;
-
-	allocation->mark = 1;
-
+	// Keep marking everything that could be accessed
 	mark(head(root));
 	mark(tail(root));
-}
-
-void collect()
-{
-	Allocation* allocation, ** pair;
-
-	mark(symbol_table);
-
-	// Delete unmarked allocations
-	pair = &global_allocations;
-
-	while (*pair != NULL)
-	{
-		allocation = *pair;
-
-		if (!allocation->mark)
-		{
-			*pair = allocation->next;
-			delete allocation;
-		}
-		else
-		{
-			pair = &allocation->next;
-		}
-	}
 }

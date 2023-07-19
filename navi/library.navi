@@ -131,3 +131,5 @@
 			(pair (int f) i)
 			(remove_decimal_helper (* f 10) (+ i 1))))
 	(remove_decimal_helper f 0))
+	
+(set (count n) (if (= n 0) 0 (+ 1 (count (- n 1)))))

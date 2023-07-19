@@ -1,18 +1,55 @@
 #include "../include/main.h"
-#include "../include/garbage_collection.h"
 #include "../include/data.h"
+#include "../include/garbage_collection.h"
+
+Allocation* global_allocations = NULL;
+
+// Implementing here so global_allocations only has to be referenced in data.cpp
+void collect()
+{
+	Allocation* alloc, ** pointer;
+
+	mark(symbol_table);
+
+	/* Free unmarked allocations */
+	pointer = &global_allocations;
+	while (*pointer != NULL)
+	{
+		alloc = *pointer;
+		if (!alloc->mark)
+		{
+			*pointer = alloc->next;
+			delete alloc;
+		}
+		else
+		{
+			pointer = &alloc->next;
+		}
+	}
+
+	/* Clear marks */
+	alloc = global_allocations;
+	while (alloc != NULL)
+	{
+		alloc->mark = 0;
+		alloc = alloc->next;
+	}
+}
 
 Atom construct(Atom head, Atom tail)
 {
-	Allocation* allocation = new Allocation();
+	Allocation* alloc = new Allocation();
 	Atom pair;
-	
-	allocation->mark = 0;
-	allocation->next = global_allocations;
-	global_allocations = allocation;
-	
+
+	alloc->mark = 0;
+	alloc->next = global_allocations;
+	global_allocations = alloc;
+
 	pair.type = Atom::PAIR;
-	pair.value.pair = new Pair{ {head, tail} };
+	pair.value.pair = &alloc->pair;
+
+	head(pair) = head;
+	tail(pair) = tail;
 
 	return pair;
 }
@@ -102,8 +139,9 @@ Error make_closure(Atom environment, Atom args, Atom body, Atom* result)
 	while (!nullp(pair))
 	{
 		if (pair.type == Atom::SYMBOL) break;
-		else if (pair.type != Atom::PAIR || head(pair).type != Atom::SYMBOL) 
-			return Error{ Error::TYPE, "Pair containing symbol symbol expected" };
+		else if (pair.type != Atom::PAIR) return Error{ Error::TYPE, "Pair expected", "MAKE_CLOSURE"};
+
+		if(head(pair).type == Atom::SYMBOL)
 
 		pair = tail(pair);
 	}

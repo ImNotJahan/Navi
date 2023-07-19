@@ -29,3 +29,5 @@ std::string to_string(Atom str);
 
 // Function call info to be pushed to stack
 Atom make_frame(Atom parent, Atom environment, Atom pending);
+
+static Atom symbol_table = null;

@@ -40,7 +40,7 @@ Error env_set(Atom environment, Atom symbol, Atom value)
 	{
 		binding = head(bindings);
 		if (*head(binding).value.symbol == *symbol.value.symbol)
-		{
+		{			
 			tail(binding) = value;
 			
 			return NOERR;

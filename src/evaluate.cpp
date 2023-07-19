@@ -8,20 +8,9 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 {
 	Atom stack = null;
 	Error err = NOERR;
-
-	static int count = 0;
-
+	
 	do
 	{
-		if (++count > 100000)
-		{
-			mark(expr);
-			mark(environment);
-			mark(stack);
-			collect();
-			count = 0;
-		}
-
 		// Symbols will evaluate to their value
 		if (expr.type == Atom::SYMBOL) err = env_get(environment, expr, result);
 		// And literals will evaluate to themselves
@@ -65,7 +54,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					else if (symbol.type == Atom::SYMBOL)
 					{
 						if (list_length(args) != 2) return ARGNUM("SET");
-
+						
 						stack = make_frame(stack, environment, null);
 						list_set(stack, 2, operation);
 						list_set(stack, 4, symbol);
@@ -157,6 +146,11 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 		if (!err.type)
 			err = evaluate_do_returning(&stack, &expr, &environment, result);
 	} while (!err.type);
+
+	mark(environment); 
+	mark(expr); 
+	mark(stack); 
+	collect();
 
 	return err;
 }

@@ -1,16 +1,14 @@
 #pragma once
 
+// Deletes all unmarked allocations & unmarks everything
+void collect();
+// Marks all objects root touches
+void mark(Atom root);
+
+// For keeping reference of everything created so no memory leak
 struct Allocation
 {
-	Pair pair;
+	struct Pair pair;
 	int mark : 1;
-	Allocation* next;
-	int length;
+	struct Allocation* next;
 };
-
-static Allocation* global_allocations = NULL;
-
-void mark(Atom root);
-void collect();
-
-static Atom symbol_table = null;
