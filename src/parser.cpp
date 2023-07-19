@@ -198,14 +198,9 @@ Error read_character(std::string str, Atom* result)
 {
 	str = str.substr(1); // Remove # from string
 
-	if (str.length() > 1)
-	{
-		if (str == "\\n") *result = make_character('\n');
-		else if (str == "\\t") *result = make_character('\t');
-		else return Error{ Error::TYPE, "Character expected", "READ_CHARACTER"};
-	}
-	else *result = make_character(str[0]);
+	Error err = make_character(str, result);
 
+	if (err.type) return err;
 	return NOERR;
 }
 
@@ -217,7 +212,8 @@ Error read_string(std::string start, std::string* end, Atom* result)
 
 	std::string temp = start.substr(0, index);
 	
-	*result = make_string(temp);
+	Error err = make_string(temp, result);
+	if (err.type) return err;
 
 	*end = start.substr(index + 1);
 

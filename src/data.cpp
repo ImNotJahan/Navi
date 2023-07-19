@@ -4,13 +4,13 @@
 
 Atom construct(Atom head, Atom tail)
 {
-	//Allocation* allocation = new Allocation();
+	Allocation* allocation = new Allocation();
 	Atom pair;
-	/*
+	
 	allocation->mark = 0;
 	allocation->next = global_allocations;
 	global_allocations = allocation;
-	*/
+	
 	pair.type = Atom::PAIR;
 	pair.value.pair = new Pair{ {head, tail} };
 
@@ -56,6 +56,24 @@ Atom make_character(char character)
 	return atom;
 }
 
+Error make_character(std::string character, Atom* result)
+{
+	if (character.length() > 1)
+	{
+		if (character == "\\n") *result = make_character('\n'); // newline
+		else if (character == "\\t") *result = make_character('\t'); // tab
+		else if (character == "\\b") *result = make_character('\b'); // backspace
+		else if (character == "\\f") *result = make_character('\f'); // form feed (new page)
+		else if (character == "\\r") *result = make_character('\r'); // carriage return (think typewritter)
+		else if (character == "\\v") *result = make_character('\v'); // vertical whitespace
+		else if (character == "\\s") *result = make_character('\\'); // just a backlash, for some reason \\\\ kept having errors
+		else return Error{ Error::TYPE, "Character expected", "MAKE_CHARACTER" };
+	}
+	else *result = make_character(character[0]);
+
+	return NOERR;
+}
+
 Atom make_float(float number)
 {
 	Atom atom = Atom{ Atom::FLOAT };
@@ -96,19 +114,36 @@ Error make_closure(Atom environment, Atom args, Atom body, Atom* result)
 	return NOERR;
 }
 
-Atom make_string(const std::string str)
+Error make_string(const std::string parameter_str, Atom* result)
 {
 	Atom pair = null;
+	std::string str = parameter_str;
 
 	for (int i = str.length() - 1; i >= 0; i--)
 	{
-		pair = cons(make_character(str[i]), pair);
+		if (i - 1 >= 0 && str[i - 1] == '\\')
+		{
+			Atom result;
+			Error err = make_character(std::string() + str[i - 1] + str[i], &result);
+
+			if (err.type) return err;
+
+			pair = cons(result, pair);
+
+			i--;
+		}
+		else
+		{
+			pair = cons(make_character(str[i]), pair);
+		}
 	}
 
 	Atom atom = Atom{ Atom::STRING };
 	atom.value.pair = pair.value.pair;
 
-	return atom;
+	*result = atom;
+
+	return NOERR;
 }
 
 Atom make_ratio(int numerator, int denominator)
@@ -217,7 +252,6 @@ std::string to_string(Atom str)
 	return temp;
 }
 
-// Data of expression to be pushed to stack
 Atom make_frame(Atom parent, Atom environment, Atom pending)
 {
 	// (parent environment evaluated_operation (pending_arguments...) (evaluated_arguments...) (body...))
