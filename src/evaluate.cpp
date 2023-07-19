@@ -9,8 +9,22 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 	Atom stack = null;
 	Error err = NOERR;
 	
+	int iter = 0;
+
 	do
 	{
+		iter++;
+		if (iter == MAX_ITER)
+		{
+			mark(environment);
+			mark(expr);
+			mark(stack);
+			
+			collect();
+
+			iter = 0;
+		}
+
 		// Symbols will evaluate to their value
 		if (expr.type == Atom::SYMBOL) err = env_get(environment, expr, result);
 		// And literals will evaluate to themselves

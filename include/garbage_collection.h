@@ -12,3 +12,5 @@ struct Allocation
 	int mark : 1;
 	struct Allocation* next;
 };
+
+#define MAX_ITER 100000
