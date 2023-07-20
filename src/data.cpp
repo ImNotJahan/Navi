@@ -1,6 +1,7 @@
 #include "../include/main.h"
 #include "../include/data.h"
 #include "../include/garbage_collection.h"
+#include "../include/strings.h"
 
 Allocation* global_allocations = NULL;
 
@@ -206,11 +207,28 @@ Atom make_ratio(int numerator, int denominator)
 	return atom;
 }
 
-Atom make_bignum() // Implement this
+Atom make_bignum(std::string number)
 {
-	Atom atom = Atom{ Atom::BIGNUM };
+	Atom atom = null;
+	int decimal_location = first_char(number, ".");
 
+	if(decimal_location != -1) number[decimal_location] = '0';
 
+	for (int i = number.length(); i > 0;)
+	{
+		int len = std::min(9, i);
+		int ind = i - len;
+
+		int num = stol(number.substr(ind, len));
+
+		atom = cons(make_int(num), atom);
+
+		i -= len;
+	}
+
+	atom = cons(make_int(decimal_location), atom);
+
+	atom.type = Atom::BIGNUM;
 	return atom;
 }
 

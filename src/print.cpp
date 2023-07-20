@@ -1,6 +1,7 @@
 #include "../include/main.h"
 #include <iostream>
 #include "../include/data.h"
+#include "../include/numbers.h"
 
 void say_expr(Atom atom)
 {
@@ -77,7 +78,29 @@ void say_expr(Atom atom)
 			std::cout << atom.value.ratio.numerator << ":" << atom.value.ratio.denominator;
 			break;
 
-		case Atom::BIGNUM: // add bignum as well
+		case Atom::BIGNUM:
+			std::string num = "";
+
+			int decimal_pos = head(atom).value.integer;
+			atom = tail(atom);
+
+			num += std::to_string(head(atom).value.integer);
+			atom = tail(atom);
+
+			while (!nullp(atom))
+			{
+				int nums = head(atom).value.integer;
+				
+				for (int i = int_length(nums) + 1; i < 10; i++) num += "0";
+
+				num += std::to_string(nums);
+				atom = tail(atom);
+			}
+
+			if (decimal_pos != -1) num[decimal_pos] = '.';
+
+			std::cout << num;
+
 			break;
 	}
 }

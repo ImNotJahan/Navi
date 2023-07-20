@@ -14,7 +14,7 @@ Atom make_function(function func);
 Error make_closure(Atom environment, Atom args, Atom body, Atom* result);
 Error make_string(const std::string str, Atom* result);
 Atom make_ratio(int numerator, int denominator);
-Atom make_bignum();
+Atom make_bignum(std::string number);
 
 // Checks if expr is proper list
 bool listp(Atom expr);

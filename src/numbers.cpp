@@ -22,3 +22,9 @@ bool is_int(std::string str)
 
     return str.find_first_not_of("0123456789") == std::string::npos;
 }
+
+int int_length(int integer)
+{
+    if (integer == 0) return 1;
+    return trunc(log10(integer)) + 1;
+}

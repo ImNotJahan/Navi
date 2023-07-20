@@ -6,7 +6,7 @@ Error function_head(Atom args, Atom* result)
 	check_args(args, 1, "HEAD");
 
 	if (nullp(head(args))) *result = null;
-	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING)) 
+	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING || head(args).type == Atom::BIGNUM))
 		return Error{ Error::TYPE, "Expected string or pair", "HEAD"};
 	else *result = head(head(args));
 
@@ -18,7 +18,7 @@ Error function_tail(Atom args, Atom* result)
 	check_args(args, 1, "TAIL");
 
 	if (nullp(head(args))) *result = null;
-	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING))
+	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING || head(args).type == Atom::BIGNUM))
 		return Error{ Error::TYPE, "Expected string or pair", "TAIL" };
 	else *result = tail(head(args));
 

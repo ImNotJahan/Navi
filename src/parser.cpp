@@ -112,19 +112,33 @@ Error parse_simple(std::string start, std::string end, Atom* result)
 
 	if (is_int(buf))
 	{
-		long long_val = std::stol(buf, &endpos);
+		if (buf.length() > 9)
+		{
+			*result = make_bignum(buf);
+		}
+		else
+		{
+			long long_val = std::stol(buf, &endpos);
 
-		result->type = Atom::INTEGER;
-		result->value.integer = long_val;
+			result->type = Atom::INTEGER;
+			result->value.integer = long_val;
+		}
 		return NOERR;
 	}
 
 	if (is_float(buf))
 	{
-		float fval = std::stof(buf, &endpos);
+		if (buf.length() > 7)
+		{
+			*result = make_bignum(buf);
+		}
+		else
+		{
+			float fval = std::stof(buf, &endpos);
 
-		result->type = Atom::FLOAT;
-		result->value.float_ = fval;
+			result->type = Atom::FLOAT;
+			result->value.float_ = fval;
+		}
 		return NOERR;
 	}
 
