@@ -23,6 +23,7 @@ void collect()
 		{
 			*pointer = alloc->next;
 			bytesAllocated -= sizeof(alloc);
+
 			delete alloc;
 		}
 		else
@@ -31,8 +32,8 @@ void collect()
 			pointer = &alloc->next;
 		}
 	}
-
-	nextCollection = bytesAllocated * 1.15; // After a bit of testing this value seemed good
+	
+	nextCollection = bytesAllocated * 1.15;
 }
 
 size_t getBytesAllocated()
@@ -48,13 +49,12 @@ size_t getNextCollection()
 Atom construct(Atom head, Atom tail)
 {
 	Allocation* alloc = new Allocation();
-	Atom pair;
+	Atom pair{ Atom::PAIR };
 
 	alloc->mark = 0;
 	alloc->next = global_allocations;
 	global_allocations = alloc;
 
-	pair.type = Atom::PAIR;
 	pair.value.pair = &alloc->pair;
 
 	head(pair) = head;
@@ -67,14 +67,13 @@ Atom construct(Atom head, Atom tail)
 
 Atom make_int(long number)
 {
-	Atom atom;
-	atom.type = Atom::INTEGER;
+	Atom atom{ Atom::INTEGER };
 	atom.value.integer = number;
 
 	return atom;
 }
 
-Atom make_symbol(const std::string* str)
+Atom make_symbol(std::string* str)
 {
 	Atom atom, pair;
 
@@ -82,14 +81,18 @@ Atom make_symbol(const std::string* str)
 	while (!nullp(pair))
 	{
 		atom = head(pair);
-		if (*atom.value.symbol == *str) return atom;
+		if (*atom.value.symbol == *str)
+		{
+			delete str;
+			return atom;
+		}
 
 		pair = tail(pair);
 	}
 
 	atom.type = Atom::SYMBOL;
 	atom.value.symbol = str;
-
+	
 	symbol_table = construct(atom, symbol_table);
 
 	return atom;
@@ -97,8 +100,7 @@ Atom make_symbol(const std::string* str)
 
 Atom make_character(char character)
 {
-	Atom atom;
-	atom.type = Atom::CHARACTER;
+	Atom atom{ Atom::CHARACTER };
 	atom.value.character = character;
 
 	return atom;

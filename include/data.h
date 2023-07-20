@@ -6,7 +6,7 @@ Atom construct(Atom head, Atom tail);
 #define cons(head, tail) construct(head, tail)
 
 Atom make_int(long num);
-Atom make_symbol(const std::string* str);
+Atom make_symbol(std::string* str);
 Atom make_character(char character);
 Error make_character(std::string character, Atom* result); // For escape characters
 Atom make_float(float str);
