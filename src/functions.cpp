@@ -22,11 +22,6 @@ Error function_tail(Atom args, Atom* result)
 		return Error{ Error::TYPE, "Expected string or pair", "TAIL" };
 	else *result = tail(head(args));
 
-	[](float x, float y)
-	{
-		return x + y;
-	};
-
 	return NOERR;
 }
 
