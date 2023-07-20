@@ -95,4 +95,6 @@ void set_default_environment(Atom* env)
 	env_set(*env, sym("NUMERATOR"), make_function(function_numerator));
 	env_set(*env, sym("DENOMINATOR"), make_function(function_denominator));
 	env_set(*env, sym("ERROR"), make_function(function_error));
+	env_set(*env, sym("STRING"), make_function(function_string));
+	env_set(*env, sym("BIGNUM"), make_function(function_bignum));
 }

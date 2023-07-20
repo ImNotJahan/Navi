@@ -117,7 +117,8 @@ Error make_character(std::string character, Atom* result)
 		else if (character == "\\f") *result = make_character('\f'); // form feed (new page)
 		else if (character == "\\r") *result = make_character('\r'); // carriage return (think typewritter)
 		else if (character == "\\v") *result = make_character('\v'); // vertical whitespace
-		else if (character == "\\s") *result = make_character('\\'); // just a backlash, for some reason \\\\ kept having errors
+		else if (character == "\\s") *result = make_character(' '); // space
+		else if (character == "\\p") *result = make_character('\\'); // just a backlash, for some reason \\\\ kept having errors
 		else return Error{ Error::TYPE, "Character expected", "MAKE_CHARACTER" };
 	}
 	else *result = make_character(character[0]);
@@ -168,6 +169,12 @@ Error make_closure(Atom environment, Atom args, Atom body, Atom* result)
 
 Error make_string(const std::string parameter_str, Atom* result)
 {
+	if (parameter_str == "")
+	{
+		*result = null;
+		return NOERR;
+	}
+
 	Atom pair = null;
 	std::string str = parameter_str;
 
@@ -190,10 +197,16 @@ Error make_string(const std::string parameter_str, Atom* result)
 		}
 	}
 
-	Atom atom = Atom{ Atom::STRING };
-	atom.value.pair = pair.value.pair;
+	pair.type = Atom::STRING;
+	*result = pair;
 
-	*result = atom;
+	return NOERR;
+}
+
+Error make_string(Atom characters, Atom* result)
+{	
+	characters.type = Atom::STRING;
+	*result = characters;
 
 	return NOERR;
 }

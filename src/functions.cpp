@@ -331,6 +331,26 @@ Error function_ratio(Atom args, Atom* result)
 	return NOERR;
 }
 
+Error function_string(Atom args, Atom* result)
+{
+	check_args(args, 1, "STRING");
+
+	Atom value = head(args);
+	Atom string{ Atom::STRING };
+	Error err;
+
+	if (value.type != Atom::PAIR) return Error{ Error::TYPE, "Expected pair", "STRING" };
+	err = make_string(value, result);
+
+	return NOERR;
+}
+
+Error function_bignum(Atom args, Atom* result)
+{
+
+	return NOERR;
+}
+
 Error function_numerator(Atom args, Atom* result)
 {
 	check_args(args, 1, "NUMERATOR");

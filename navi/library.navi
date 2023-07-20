@@ -46,7 +46,7 @@
 (set (hhead x) (head (head x)))
 (set (hail x) (head (tail x)))
 
-~ = function that can compair different type_ofs without an error
+~ = function that can compare different type_ofs without an error
 (set (u= a b) 
     (if (= (type_of a) (type_of b))
         (= a b)

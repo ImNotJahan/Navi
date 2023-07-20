@@ -29,6 +29,8 @@ Error function_ratio(Atom args, Atom* result);
 Error function_int(Atom args, Atom* result);
 // Convert other number type to float
 Error function_float(Atom args, Atom* result);
+Error function_string(Atom args, Atom* result);
+Error function_bignum(Atom args, Atom* result);
 
 Error function_numerator(Atom args, Atom* result);
 Error function_denominator(Atom args, Atom* result);

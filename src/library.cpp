@@ -21,6 +21,12 @@ void interpret_file(Atom environment, std::string path, LogLevel logLevel)
 {
 	std::string text = read_file(path);
 	
+	if (text == "")
+	{
+		std::cout << "File " << path << " doesn't exist" << std::endl;
+		return;
+	}
+
 	if(logLevel == LogLevel::ALL) std::cout << "Reading " << path << std::endl;
 
 	Atom expr;
