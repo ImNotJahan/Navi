@@ -3,11 +3,13 @@
 		(when (<= i x)
 			(let ((fizz (= (remainder i 3) 0)) (buzz (= (remainder i 5) 0)))
 				(if (and fizz buzz) 
-					(say "fizzbuzz")
+					(say "fizzbuzz\n")
 					(if fizz 
-						(say "fizz")
+						(say "fizz\n")
 						(if buzz
-							(say "buzz")
-							(say i))))
+							(say "buzz\n")
+							(do 
+								(say i)
+								(say #\n)))))
 				(fizzbuzz_helper x (+ 1 i)))))
 	(fizzbuzz_helper x 1))

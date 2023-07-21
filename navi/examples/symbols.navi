@@ -5,12 +5,14 @@
 		(∴ (¬ (> i x))
 			(let ((f (l i 3)) (b (l i 5)))
 				(∴ (∧ f b) 
-					(say "fizzbuzz")
+					(say "fizzbuzz\n")
 					(∴ f 
-						(say "fizz")
+						(say "fizz\n")
 						(∴ b
-							(say "buzz")
-							(say i))))
+							(say "buzz\n")
+							(do 
+								(say i)
+								(say #\n)))))
 				(h x (+ 1 i)))
 			∅)))
 	(h x 1)))

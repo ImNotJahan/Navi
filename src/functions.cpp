@@ -276,7 +276,6 @@ Error function_say(Atom args, Atom* result)
 	expr = head(args);
 
 	say_expr(expr);
-	say_expr(make_character('\n'));
 
 	return NOERR;
 }
