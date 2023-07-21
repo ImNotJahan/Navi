@@ -143,8 +143,8 @@ Error function_type(Atom args, Atom* result)
 			*result = sym("BOOL");
 			break;
 
-		case Atom::EXPANSION:
-			*result = sym("EXPANSION");
+		case Atom::EXPAND:
+			*result = sym("EXPAND");
 			break;
 
 		case Atom::STRING:

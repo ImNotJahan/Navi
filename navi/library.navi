@@ -1,6 +1,8 @@
 (set (abs x) (if (< x 0) (* x -1) x))
 
 (set (> a b) (< b a))
+(set (<= a b) (or (< a b) (= a b)))
+(set (>= a b) (or (> a b) (= a b)))
 
 (set (not p) (= p false))
 (set (not= a b) (not (= a b)))
@@ -52,7 +54,7 @@
         (= a b)
         false))
 
-(expansion (quasiquote x)
+(expand (quasiquote x)
     (if (pair? x)
         (if (u= (head x) 'unquote)
             (hail x)
@@ -79,15 +81,15 @@
 				(unary-map tail arg-lists))))
 		null))
 
-(expansion (++ var) ;(set ,var (+ ,var 1)))
-(expansion (-- var) ;(set ,var (- ,var 1)))
+(expand (++ var) ;(set ,var (+ ,var 1)))
+(expand (-- var) ;(set ,var (- ,var 1)))
 
-(expansion (+= var value) ;(set ,var (+ ,var ,value)))
-(expansion (-= var value) ;(set ,var (- ,var ,value)))
-(expansion (*= var value) ;(set ,var (* ,var ,value)))
-(expansion (/= var value) ;(set ,var (/ ,var ,value)))
+(expand (+= var value) ;(set ,var (+ ,var ,value)))
+(expand (-= var value) ;(set ,var (- ,var ,value)))
+(expand (*= var value) ;(set ,var (* ,var ,value)))
+(expand (/= var value) ;(set ,var (/ ,var ,value)))
 
-(expansion (let defs . body)
+(expand (let defs . body)
     ;((lambda ,(map head defs) ,@body)
         ,@(map hail defs)))
 		
@@ -97,6 +99,13 @@
 		(if (not= 0 index)
 			(get (tail list) (- index 1))
 			(head list))))
+
+(set (in x list)
+	(if (null? list)
+		false
+		(if (u= (head list) x)
+			true
+			(in x (tail list)))))
 		
 (set (remainder a b)
 	(set (loop a b c)
@@ -133,3 +142,11 @@
 	(remove_decimal_helper f 0))
 	
 (set (count n) (if (= n 0) 0 (+ 1 (count (- n 1)))))
+
+(set (break) (error "EMPTY"))
+
+(expand (do . body)
+  ;((lambda () ,@body)))
+
+(expand (when p . body)
+  ;(if ,p (do ,@body) null))

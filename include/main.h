@@ -33,7 +33,7 @@ struct Atom
 		FUNCTION,
 		CLOSURE,
 		BOOLEAN,
-		EXPANSION,
+		EXPAND,
 		STRING,
 		BIGNUM, // to support
 		RATIO

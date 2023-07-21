@@ -90,23 +90,23 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					expr = head(args);
 					continue;
 				}
-				else if (*operation.value.symbol == "EXPANSION")
+				else if (*operation.value.symbol == "EXPAND")
 				{
 					Atom name, macro;
 
-					if (list_length(args) < 2) return ARGNUM("EXPANSION");
+					if (list_length(args) < 2) return ARGNUM("EXPAND");
 
 					if (head(args).type != Atom::PAIR) return Error{ Error::SYNTAX };
 
 					name = head(head(args));
 					if (name.type != Atom::SYMBOL)
-						return Error{ Error::TYPE, "Expected symbol for name", "EXPANSION" };
+						return Error{ Error::TYPE, "Expected symbol for name", "EXPAND" };
 
 					err = make_closure(environment, tail(head(args)), tail(args), &macro);
 
 					if (!err.type)
 					{
-						macro.type = Atom::EXPANSION;
+						macro.type = Atom::EXPAND;
 						*result = name;
 
 						env_set(environment, name, macro);
@@ -131,7 +131,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					std::string path = to_string(head(args));
 					interpret_file(environment, path, LogLevel::ERROR_ONLY);
 
-					err = Error{ Error::EMPTY, "Loaded file " + path};
+					err = Error{ Error::EMPTY };
 					continue;
 				}
 				else goto push;
@@ -329,7 +329,7 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 		operation = *result;
 		list_set(*stack, 2, operation);
 		
-		if (operation.type == Atom::EXPANSION)
+		if (operation.type == Atom::EXPAND)
 		{
 			// Don't evaluate macro arguments
 			args = list_get(*stack, 3);
@@ -367,7 +367,7 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 		}
 		else goto store_arg;
 	}
-	else if (operation.type == Atom::EXPANSION)
+	else if (operation.type == Atom::EXPAND)
 	{
 		*expr = *result;
 		*stack = head((*stack));

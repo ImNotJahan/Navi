@@ -1,0 +1,5 @@
+(say (∈ #a "this is string"))
+(say ∅)
+
+(:= 1+ (λ (x) (+ 1 x)))
+(say (1+ 10))

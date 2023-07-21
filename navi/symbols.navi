@@ -1,0 +1,31 @@
+(set (¬ predicate) (not predicate))
+
+(set (∧ a b) (and a b))
+(set (∨ a b) (or a b))
+
+(set T true)
+(set ⊥ false)
+
+(set (→ a b) (¬ (∧ (= a true) (= b false)))) ~ material conditional
+
+(set (≡ a b) (= a b)) ~ is the same as
+(set (⊕ a b) (∧ (∨ a b) (¬ (∧ a b)))) ~ xor
+
+(set (x a b) (* a b))
+(set (^ a b) (exp a b))
+(set (: a b) (ratio a b))
+(set (÷ a b) (/ a b))
+
+(set (≠ a b) (not= a b))
+
+(set (≤ a b) (<= a b))
+(set (≥ a b) (>= a b))
+
+(set (∈ x list) (in x list))
+(set (∉ x list) (¬ (∈ x list)))
+(set (∋ list x) (∈ x list))
+
+(expand (:= a b) ;(set ,a ,b))
+(expand (λ args body) ;(lambda ,args ,body))
+
+(set ∅ null)

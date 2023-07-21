@@ -9,7 +9,7 @@ void mark(Atom root)
 
 		if (!(root.type == Atom::PAIR ||
 			root.type == Atom::CLOSURE ||
-			root.type == Atom::EXPANSION ||
+			root.type == Atom::EXPAND ||
 			root.type == Atom::STRING ||
 			root.type == Atom::BIGNUM)) return;
 

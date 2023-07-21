@@ -66,8 +66,8 @@ void say_expr(Atom atom)
 			std::cout << (atom.value.boolean ? "TRUE" : "FALSE");
 			break;
 
-		case Atom::EXPANSION:
-			std::cout << "EXPANSION";
+		case Atom::EXPAND:
+			std::cout << "EXPAND";
 			break;
 
 		case Atom::STRING:
