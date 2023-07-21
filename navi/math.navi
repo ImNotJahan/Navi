@@ -1,0 +1,46 @@
+(set (factorial x)
+	(if (< x 2)
+		1
+		(* x (factorial (- x 1)))))
+		
+(set (remove_decimal f)
+	(set (remove_decimal_helper f i)
+		(if (= (int f) f)
+			(pair (int f) i)
+			(remove_decimal_helper (* f 10) (+ i 1))))
+	(remove_decimal_helper f 0))
+
+(set (gcd . xs)
+	(set (gcd_inner a b)
+		(if (= b 0) a (gcd_inner b (remainder a b))))
+	(abs (fold_left gcd_inner 0 xs)))
+	
+(set (remainder a b)
+	(set (loop a b c)
+		(if (< b 0)
+			(if (< a 0)
+				(if (< (+ c b) a)
+					(* (- a c) -1)
+					(loop a b (+ c b)))
+				(if (> (- c b) a)
+					(* (- a c) -1)
+					(loop a b (- c b))))
+			(if (< a 0)
+				(if (< (- c b) a)
+					(- a c)
+					(loop a b (- c b)))
+				(if (> (+ c b) a)
+					(- a c)
+					(loop a b (+ c b))))))
+	(loop a b 0))
+	
+(set (divisible a b) (= (remainder a b) 0))
+	
+(set (exp num pow)
+	(if (< pow 1)
+		1
+		(* num (exp num (- pow 1)))))
+
+(set (square num) (exp num 2))
+
+(set (abs x) (if (< x 0) (* x -1) x))

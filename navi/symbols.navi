@@ -1,3 +1,5 @@
+(load "navi/math.navi")
+
 (set (¬ predicate) (not predicate))
 
 (set (∧ a b) (and a b))

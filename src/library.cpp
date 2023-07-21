@@ -23,7 +23,7 @@ void interpret_file(Atom environment, std::string path, LogLevel logLevel)
 	
 	if (text == "")
 	{
-		std::cout << "File " << path << " doesn't exist" << std::endl;
+		std::cout << "File " << path << " doesn't exist or is empty" << std::endl;
 		return;
 	}
 
@@ -35,7 +35,7 @@ void interpret_file(Atom environment, std::string path, LogLevel logLevel)
 		Atom result;
 		Error err = evaluate_expr(expr, environment, &result);
 
-		if (err.type && logLevel >= LogLevel::ERROR_ONLY)
+		if (err.type && err.type != Error::EMPTY && logLevel >= LogLevel::ERROR_ONLY)
 		{
 			std::cout << "Error in expression: " << std::endl;
 			say_expr(expr);

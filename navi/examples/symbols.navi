@@ -1,5 +1,7 @@
 ~ fizzbuzz, but designed to look cursed. Is more or less the same as fizzbuzz.navi though, just using symbols.navi
 
+(load "navi/symbols.navi")
+
 (:= fizzbuzz (λ (x)
 	(:= h (λ (x i)
 		(∴ (¬ (> i x))
@@ -12,7 +14,7 @@
 							(say "buzz\n")
 							(do 
 								(say i)
-								(say #\n)))))
+								(newline)))))
 				(h x (+ 1 i)))
 			∅)))
 	(h x 1)))

@@ -1,5 +1,3 @@
-(set (abs x) (if (< x 0) (* x -1) x))
-
 (set (> a b) (< b a))
 (set (<= a b) (or (< a b) (= a b)))
 (set (>= a b) (or (> a b) (= a b)))
@@ -16,13 +14,6 @@
 	(if (null? list)
 		0
 		(+ 1 (length (tail list)))))
-
-(set (exp num pow)
-	(if (< pow 1)
-		1
-		(* num (exp num (- pow 1)))))
-
-(set (square num) (exp num 2))
 
 (set (fold_left proc init list)
     (if (not (null? list))
@@ -106,47 +97,18 @@
 		(if (u= (head list) x)
 			true
 			(in x (tail list)))))
-		
-(set (remainder a b)
-	(set (loop a b c)
-		(if (< b 0)
-			(if (< a 0)
-				(if (< (+ c b) a)
-					(* (- a c) -1)
-					(loop a b (+ c b)))
-				(if (> (- c b) a)
-					(* (- a c) -1)
-					(loop a b (- c b))))
-			(if (< a 0)
-				(if (< (- c b) a)
-					(- a c)
-					(loop a b (- c b)))
-				(if (> (+ c b) a)
-					(- a c)
-					(loop a b (+ c b))))))
-	(loop a b 0))
 	
 (set (even? x) (= (remainder x 2) 0))
 (set (odd? x) (not (even? x)))
-
-(set (gcd . xs)
-	(set (gcd_inner a b)
-		(if (= b 0) a (gcd_inner b (remainder a b))))
-	(abs (fold_left gcd_inner 0 xs)))
-	
-(set (remove_decimal f)
-	(set (remove_decimal_helper f i)
-		(if (= (int f) f)
-			(pair (int f) i)
-			(remove_decimal_helper (* f 10) (+ i 1))))
-	(remove_decimal_helper f 0))
 	
 (set (count n) (if (= n 0) 0 (+ 1 (count (- n 1)))))
 
 (set (break) (error "EMPTY"))
 
 (expand (do . body)
-  ;((lambda () ,@body)))
+	;((lambda () ,@body)))
 
 (expand (when p . body)
-  ;(if ,p (do ,@body) null))
+	;(if ,p (do ,@body) null))
+	
+(set (newline) (say #\n))

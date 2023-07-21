@@ -11,3 +11,14 @@
 				false
 				true))
 		false))
+
+~ add char to string
+(set (+ctos str char)
+	(string (append str (pair char null))))
+
+(set (+string str1 str2)
+	(if (non_null? str2)
+		(+string 
+			(+ctos str1 (head str2))
+			(tail str2))
+		str1))

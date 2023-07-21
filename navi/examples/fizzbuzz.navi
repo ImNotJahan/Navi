@@ -1,7 +1,9 @@
+(load "navi/math.navi")
+
 (set (fizzbuzz x)
 	(set (fizzbuzz_helper x i)
 		(when (<= i x)
-			(let ((fizz (= (remainder i 3) 0)) (buzz (= (remainder i 5) 0)))
+			(let ((fizz (divisible i 3)) (buzz (divisible i 5)))
 				(if (and fizz buzz) 
 					(say "fizzbuzz\n")
 					(if fizz 
@@ -10,6 +12,6 @@
 							(say "buzz\n")
 							(do 
 								(say i)
-								(say #\n)))))
+								(newline)))))
 				(fizzbuzz_helper x (+ 1 i)))))
 	(fizzbuzz_helper x 1))
