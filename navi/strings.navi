@@ -4,6 +4,9 @@
 		(substr (string (tail str)) (- start 1))))
 		
 (set (=string a b)
+	(check_type a '(string pair) "=string")
+	(check_type b '(string pair) "=string")
+	
 	(if (= (head a) (head b))
 		(if (and (pair? (tail a)) (pair? (tail b)))
 			(=string (tail a) (tail b))
@@ -11,14 +14,3 @@
 				false
 				true))
 		false))
-
-~ add char to string
-(set (+ctos str char)
-	(string (append str (pair char null))))
-
-(set (+string str1 str2)
-	(if (non_null? str2)
-		(+string 
-			(+ctos str1 (head str2))
-			(tail str2))
-		str1))

@@ -86,7 +86,7 @@
 		
 (set (get list index) 
 	(if (null? list)
-		'OUT_OF_BOUNDS
+		null
 		(if (not= 0 index)
 			(get (tail list) (- index 1))
 			(head list))))
@@ -112,3 +112,36 @@
 	;(if ,p (do ,@body) null))
 	
 (set (newline) (say #\n))
+		
+~ add char to string
+(set (+ctos str char)
+	(check_type str 'STRING "+ctos")
+	(check_type char 'CHARACTER "+ctos")
+	
+	(string (append str (pair char null))))
+
+(set (+string str1 str2)
+	(if (non_null? str2)
+		(+string 
+			(+ctos str1 (head str2))
+			(tail str2))
+		str1))
+		
+~ All the +strings makes this slow when an error does happen. Hopefully however, that's a rare case.
+(set (check_type variable type from)
+	(set (helper type) ~ Type error - from - expected type but got type of variable
+		(error 
+			"TYPE" 
+			(+string 
+				(+string "Expected " (string type)) 
+				(+string " but got " (string (type_of variable)))) 
+			from))
+	
+	~ if type is pair, check that type_of variable is in type
+	(if (= (type_of type) 'pair) 
+		(if (in (type_of variable) type) 
+			null 
+			(helper (type_of type)))
+			
+		(when (not= (type_of variable) type)
+			(helper type))))

@@ -338,12 +338,22 @@ Error function_string(Atom args, Atom* result)
 
 	Atom value = head(args);
 	Atom string{ Atom::STRING };
-	Error err;
+	Error err = NOERR;
 
-	if (value.type != Atom::PAIR) return Error{ Error::TYPE, "Expected pair", "STRING" };
-	err = make_string(value, result);
+	if (value.type == Atom::PAIR)
+	{
+		err = make_string(value, result);
+	}
+	else if (value.type == Atom::SYMBOL)
+	{
+		err = make_string(*value.value.symbol, result);
+	}
+	else
+	{
+		return Error{ Error::TYPE, "Expected pair or symbol", "STRING" };
+	}
 
-	return NOERR;
+	return err;
 }
 
 Error function_bignum(Atom args, Atom* result)
