@@ -134,6 +134,32 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					err = Error{ Error::EMPTY };
 					continue;
 				}
+				else if (*operation.value.symbol == "REFLECT")
+				{
+					if (list_length(args) != 1) return ARGNUM("REFLECT");
+
+					Atom arg = head(args);
+
+					if (arg.type == Atom::SYMBOL)
+					{
+						err = env_get(environment, arg, &arg);
+
+						if (err.type) return err;
+					}
+					if (arg.type != Atom::STRING) return Error{ Error::TYPE, "Expected string", "REFLECT" };
+
+					Atom op;
+
+					std::string input = to_string(arg);
+					err = read_expr(input, &input, &op);
+
+					if (!err.type)
+					{
+						//stack = make_frame(stack, environment, args);
+						expr = op;
+						continue;
+					}
+				}
 				else goto push;
 			}
 			else if (operation.type == Atom::FUNCTION)
@@ -152,8 +178,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 		}
 
 		if (nullp(stack)) break;
-		if (!err.type)
-			err = evaluate_do_returning(&stack, &expr, &environment, result);
+		if (!err.type) err = evaluate_do_returning(&stack, &expr, &environment, result);
 	} while (!err.type);
 	
 	mark(environment); 

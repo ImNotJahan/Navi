@@ -1,0 +1,12 @@
+| 
+Creates a read-eval-print loop
+Demonstrates (listen) & (reflect)
+|
+
+(set (repl) 
+	(let ((input (listen)))
+		(when (not= input null) ~ remember that empty strings are equal to null
+			(say (reflect input))
+			(repl))))
+
+(repl)

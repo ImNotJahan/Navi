@@ -25,6 +25,26 @@ int first_char(std::string str, const char* characters)
     return -1;
 }
 
+int first_char(std::string str, const char* characters, const char* escape)
+{
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (find_char_p(str[i], characters))
+        {
+            if (i == 0) return i; // if first char, escape char couldn't be before it
+
+            for (int k = 0; k < strlen(escape); k++)
+            {
+                if (str[i - 1] == escape[k]) break;
+
+                if (k + 1 == strlen(escape)) return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
 bool has_char_p(std::string str, const char* characters)
 {
     if (first_char(str, characters) == -1) return false;

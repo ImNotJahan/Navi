@@ -220,7 +220,7 @@ Error read_character(std::string str, Atom* result)
 
 Error read_string(std::string start, std::string* end, Atom* result)
 {
-	int index = first_char(start, "\"");
+	int index = first_char(start, "\"", "\\");
 
 	if (index == -1) return Error{ Error::SYNTAX, "String doesn't close", "READ_STRING" };
 

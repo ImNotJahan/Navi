@@ -1,5 +1,7 @@
 #include "../include/main.h"
 #include "../include/functions.h"
+#include <iostream>
+#include "../include/evaluate.h"
 
 Error function_head(Atom args, Atom* result)
 {
@@ -421,4 +423,19 @@ Error function_error(Atom args, Atom* result)
 	}
 
 	return err;
+}
+
+Error function_listen(Atom args, Atom* result)
+{
+	check_args(args, -1, "LISTEN");
+
+	std::string input;
+	std::getline(std::cin, input);
+
+	Error err;
+
+	err = make_string(input, result);
+
+	if (err.type) return err;
+	return NOERR;
 }

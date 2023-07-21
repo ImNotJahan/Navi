@@ -21,7 +21,9 @@ Error function_and(Atom args, Atom* result);
 Error function_or(Atom args, Atom* result);
 
 Error function_apply(Atom args, Atom* result);
+
 Error function_say(Atom args, Atom* result);
+Error function_listen(Atom args, Atom* result);
 
 // Create ratio
 Error function_ratio(Atom args, Atom* result);

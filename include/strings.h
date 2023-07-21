@@ -8,6 +8,8 @@ bool has_char_p(std::string str, const char* characters);
 
 // Return index of first instance of any char in characters in str, or -1 if none found
 int first_char(std::string str, const char* characters);
+// Return index of first instance of any char in characters in str, unless preceeded by escape character. Returns -1 if none found
+int first_char(std::string str, const char* characters, const char* escape);
 
 // Return true if character equals any of characters
 bool find_char_p(char character, const char* characters);
