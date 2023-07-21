@@ -1,7 +1,6 @@
 (set (fizzbuzz x)
 	(set (fizzbuzz_helper x i)
-		(if (> i x)
-			(error "OK")
+		(when (<= i x)
 			(let ((fizz (= (remainder i 3) 0)) (buzz (= (remainder i 5) 0)))
 				(if (and fizz buzz) 
 					(say "fizzbuzz")

@@ -26,6 +26,12 @@
 (set (∋ list x) (∈ x list))
 
 (expand (:= a b) ;(set ,a ,b))
-(expand (λ args body) ;(lambda ,args ,body))
+(expand (λ args . body) ;(lambda ,args ,@body))
 
 (set ∅ null)
+
+~ since | is used as comment, I figured l is close enough
+(set (l a b) (= (remainder a b) 0))
+(set (ł a b) (¬ (l a b)))
+
+(expand (∴ p a b) ;(if ,p ,a ,b))

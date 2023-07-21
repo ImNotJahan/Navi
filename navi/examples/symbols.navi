@@ -1,5 +1,16 @@
-(say (∈ #a "this is string"))
-(say ∅)
+~ fizzbuzz, but designed to look cursed. Is more or less the same as fizzbuzz.navi though, just using symbols.navi
 
-(:= 1+ (λ (x) (+ 1 x)))
-(say (1+ 10))
+(:= fizzbuzz (λ (x)
+	(:= h (λ (x i)
+		(∴ (¬ (> i x))
+			(let ((f (l i 3)) (b (l i 5)))
+				(∴ (∧ f b) 
+					(say "fizzbuzz")
+					(∴ f 
+						(say "fizz")
+						(∴ b
+							(say "buzz")
+							(say i))))
+				(h x (+ 1 i)))
+			∅)))
+	(h x 1)))
