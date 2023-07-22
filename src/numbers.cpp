@@ -26,5 +26,8 @@ bool is_int(std::string str)
 int int_length(int integer)
 {
     if (integer == 0) return 1;
+    
+    // Negative sign should be included
+    if(integer < 0) return trunc(log10(abs(integer))) + 2;
     return trunc(log10(integer)) + 1;
 }

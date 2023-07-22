@@ -2,6 +2,7 @@
 #include "../include/functions.h"
 #include <iostream>
 #include "../include/evaluate.h"
+#include "../include/numbers.h"
 
 Error function_head(Atom args, Atom* result)
 {
@@ -358,6 +359,60 @@ Error function_string(Atom args, Atom* result)
 
 Error function_bignum(Atom args, Atom* result)
 {
+	check_args(args, 1, "BIGNUM");
+	
+	Atom value = head(args);
+	Atom bignum{ Atom::BIGNUM };
+
+	if (value.type == Atom::PAIR)
+	{
+		if (!listp(value)) return Error{ Error::SYNTAX, "Improper list", "BIGNUM" };
+		if (list_length(value) < 2) return Error{ Error::SYNTAX, "List must contain at least decimal position and one integer", "BIGNUM" };
+		
+		if (!list_of_type_p(value, Atom{ Atom::INTEGER })) return Error{ Error::SYNTAX, "List must only contain integers", "BIGNUM" };
+
+		int decimal_pos = head(value).value.integer;
+		if (decimal_pos < -1) return Error{ Error::SYNTAX, "Decimal position must be greater than -1", "BIGNUM" };
+		if (decimal_pos > bignum_length(value) - 1) return Error{ Error::SYNTAX, "Decimal position cannot be greater than number length", "BIGNUM" };
+
+		// Loop through pair to make sure no ints after head are negative (eg -1 1234 -4832)
+
+		Atom possible_bignum = tail(tail(copy_list(value))); // Ignore first two ints (decimal pos and head)
+		while (!nullp(possible_bignum))
+		{
+			if (head(possible_bignum).value.integer < 0) return Error{ Error::SYNTAX, "Bignum integer parts should not be negative after head", "BIGNUM" };
+			possible_bignum = tail(possible_bignum);
+		}
+
+		bignum.value.pair = value.value.pair;
+		*result = bignum;
+	}
+	else if (value.type == Atom::STRING)
+	{
+		if (is_int(*value.value.symbol) || is_float(*value.value.symbol))
+		{
+			*result = make_bignum(*value.value.symbol);
+		}
+		else
+		{
+			return Error{ Error::SYNTAX, "String must be of number", "BIGNUM" };
+		}
+	}
+	else if (value.type == Atom::INTEGER)
+	{
+		bignum = cons(make_int(-1), cons(value, null));
+		bignum.type = Atom::BIGNUM;
+
+		*result = bignum;
+	}
+	else if (value.type == Atom::BIGNUM)
+	{
+		*result = value;
+	}
+	else
+	{
+		return Error{ Error::TYPE, "Type cannot be turned into bignum", "BIGNUM" };
+	}
 
 	return NOERR;
 }

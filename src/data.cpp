@@ -2,6 +2,7 @@
 #include "../include/data.h"
 #include "../include/garbage_collection.h"
 #include "../include/strings.h"
+#include "../include/numbers.h"
 
 Allocation* global_allocations = NULL;
 
@@ -224,9 +225,24 @@ Atom make_ratio(int numerator, int denominator)
 Atom make_bignum(std::string number)
 {
 	Atom atom = null;
+	bool negative = false;
+
+	// No one cares about + signs
+	if (number[0] == '+') number.substr(1);
+	// Temporarly remove negative sign so leading zeros can be removed
+	else if (number[0] == '-')
+	{
+		number = number.substr(1);
+		negative = true;
+	}
+
+	remove_starting_chars(number, "0"); // Remove leading zeros
+
+	if (negative) number = '-' + number; // Re-add negative sign
+
 	int decimal_location = first_char(number, ".");
 
-	if(decimal_location != -1) number[decimal_location] = '0';
+	if(decimal_location != -1) number[decimal_location] = '9';
 
 	for (int i = number.length(); i > 0;)
 	{
@@ -244,6 +260,11 @@ Atom make_bignum(std::string number)
 
 	atom.type = Atom::BIGNUM;
 	return atom;
+}
+
+int bignum_length(Atom bignum)
+{
+	return (list_length(bignum) - 2) * 9 + int_length(list_get(bignum, 1).value.integer);
 }
 
 bool listp(Atom expr)
@@ -298,6 +319,17 @@ Atom list_get(Atom list, int index)
 {
 	while (index-- != 0) list = tail(list);
 	return head(list);
+}
+
+bool list_of_type_p(Atom list, Atom type)
+{
+	while (!nullp(list))
+	{
+		if (head(list).type != type.type) return false;
+		list = tail(list);
+	}
+
+	return true;
 }
 
 void list_set(Atom list, int index, Atom value)
