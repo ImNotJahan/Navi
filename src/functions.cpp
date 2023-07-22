@@ -343,15 +343,53 @@ Error function_string(Atom args, Atom* result)
 
 	if (value.type == Atom::PAIR)
 	{
-		err = make_string(value, result);
+		if (!listp(value)) return Error{ Error::SYNTAX, "Improper list", "STRING" };
+		if (!list_of_type_p(value, Atom{ Atom::CHARACTER })) return Error{ Error::SYNTAX, "List must only contain characters", "STRING" };
+
+		string.value.pair = value.value.pair;
+		*result = string;
 	}
 	else if (value.type == Atom::SYMBOL)
 	{
 		err = make_string(*value.value.symbol, result);
 	}
+	else if (value.type == Atom::STRING)
+	{
+		*result = value;
+	}
+	else if (value.type == Atom::INTEGER)
+	{
+		err = make_string(std::to_string(value.value.integer), result);
+	}
+	else if (value.type == Atom::FLOAT)
+	{
+		err = make_string(std::to_string(value.value.float_), result);
+	}
+	else if (value.type == Atom::NULL_)
+	{
+		err = make_string("null", result);
+	}
+	else if (value.type == Atom::RATIO)
+	{
+		std::string str = 
+			std::to_string(value.value.ratio.numerator) 
+			+ ":" + 
+			std::to_string(value.value.ratio.denominator);
+		
+		err = make_string(str, result);
+	}
+	else if (value.type == Atom::CHARACTER)
+	{
+		err = make_string(std::string(1, value.value.character), result);
+	}
+	else if (value.type == Atom::BOOLEAN)
+	{
+		if(value.value.boolean) err = make_string("true", result);
+		else err = make_string("false", result);
+	}
 	else
 	{
-		return Error{ Error::TYPE, "Expected pair or symbol", "STRING" };
+		return Error{ Error::TYPE, "Type cannot be turned into string", "STRING" };
 	}
 
 	return err;

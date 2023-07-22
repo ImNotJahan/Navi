@@ -205,14 +205,6 @@ Error make_string(const std::string parameter_str, Atom* result)
 	return NOERR;
 }
 
-Error make_string(Atom characters, Atom* result)
-{	
-	characters.type = Atom::STRING;
-	*result = characters;
-
-	return NOERR;
-}
-
 Atom make_ratio(int numerator, int denominator)
 {
 	Atom atom = Atom{ Atom::RATIO };

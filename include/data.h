@@ -21,8 +21,6 @@ Atom make_function(function func);
 Error make_closure(Atom environment, Atom args, Atom body, Atom* result);
 // Makes string from std::string
 Error make_string(const std::string str, Atom* result);
-// Makes string from list of characters
-Error make_string(Atom characters, Atom* result);
 // Makes ratio from parts
 Atom make_ratio(int numerator, int denominator);
 // Makes bignum from string of number
