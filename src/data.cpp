@@ -230,10 +230,6 @@ Atom make_bignum(std::string number)
 
 	remove_starting_chars(number, "0"); // Remove leading zeros
 
-	int decimal_location = first_char(number, ".");
-
-	if(decimal_location != -1) number[decimal_location] = '9';
-
 	for (int i = number.length(); i > 0;)
 	{
 		int len = std::min(9, i);
@@ -252,21 +248,19 @@ Atom make_bignum(std::string number)
 		head(atom).value.integer = head(atom).value.integer * -1;
 	}
 
-	atom = cons(make_int(decimal_location), atom);
-
 	atom.type = Atom::BIGNUM;
 	return atom;
 }
 
 int bignum_length(Atom bignum)
 {
-	return (list_length(copy_list(bignum)) - 2) * 9 + int_length(list_get(copy_list(bignum), 1).value.integer);
+	return (list_length(copy_list(bignum)) - 1) * 9 + int_length(head(copy_list(bignum)).value.integer);
 }
 
 Atom int_to_bignum(int integer)
 {
 	Atom bignum;
-	bignum = cons(make_int(-1), cons(make_int(integer), null));
+	bignum = cons(make_int(integer), null);
 	bignum.type = Atom::BIGNUM;
 
 	return bignum;

@@ -128,17 +128,11 @@ Error parse_simple(std::string start, std::string end, Atom* result)
 
 	if (is_float(buf))
 	{
-		if (buf.length() > 7)
-		{
-			*result = make_bignum(buf);
-		}
-		else
-		{
-			float fval = std::stof(buf, &endpos);
+		float fval = std::stof(buf, &endpos);
 
-			result->type = Atom::FLOAT;
-			result->value.float_ = fval;
-		}
+		result->type = Atom::FLOAT;
+		result->value.float_ = fval;
+
 		return NOERR;
 	}
 

@@ -81,9 +81,6 @@ void say_expr(Atom atom)
 		case Atom::BIGNUM:
 			std::string num = "";
 
-			int decimal_pos = head(atom).value.integer;
-			atom = tail(atom);
-
 			num += std::to_string(head(atom).value.integer);
 			atom = tail(atom);
 
@@ -95,15 +92,6 @@ void say_expr(Atom atom)
 
 				num += std::to_string(nums);
 				atom = tail(atom);
-			}
-
-			if (decimal_pos != -1) num[decimal_pos] = '.';
-
-			if (decimal_pos == 0) std::cout << "0"; // Looks nicer if 0.123456789 is printed instead of .123456789
-			if (decimal_pos == 1 && num[0] == '-')
-			{
-				num = num.substr(1); // remove negative sign as going to print it now
-				std::cout << "-0";
 			}
 
 			std::cout << num;
