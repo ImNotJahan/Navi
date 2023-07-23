@@ -35,7 +35,7 @@ struct Atom
 		BOOLEAN,
 		EXPAND,
 		STRING,
-		BIGNUM, // to support
+		BIGNUM,
 		RATIO
 	} type;
 

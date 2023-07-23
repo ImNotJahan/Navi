@@ -230,8 +230,6 @@ Atom make_bignum(std::string number)
 
 	remove_starting_chars(number, "0"); // Remove leading zeros
 
-	if (negative) number = '-' + number; // Re-add negative sign
-
 	int decimal_location = first_char(number, ".");
 
 	if(decimal_location != -1) number[decimal_location] = '9';
@@ -248,6 +246,12 @@ Atom make_bignum(std::string number)
 		i -= len;
 	}
 
+	// stol counts negative sign in input despite being signed result, so just add it in later
+	if (negative)
+	{
+		head(atom).value.integer = head(atom).value.integer * -1;
+	}
+
 	atom = cons(make_int(decimal_location), atom);
 
 	atom.type = Atom::BIGNUM;
@@ -257,6 +261,15 @@ Atom make_bignum(std::string number)
 int bignum_length(Atom bignum)
 {
 	return (list_length(bignum) - 2) * 9 + int_length(list_get(bignum, 1).value.integer);
+}
+
+Atom int_to_bignum(int integer)
+{
+	Atom bignum;
+	bignum = cons(make_int(-1), cons(make_int(integer), null));
+	bignum.type = Atom::BIGNUM;
+
+	return bignum;
 }
 
 bool listp(Atom expr)

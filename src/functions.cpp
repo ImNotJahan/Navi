@@ -1,8 +1,8 @@
 #include "../include/main.h"
 #include "../include/functions.h"
-#include <iostream>
-#include "../include/evaluate.h"
 #include "../include/numbers.h"
+
+#include <iostream>
 
 Error function_head(Atom args, Atom* result)
 {
@@ -35,73 +35,6 @@ Error function_pair(Atom args, Atom* result)
 	*result = cons(head(args), head(tail(args)));
 
 	return NOERR;
-}
-
-// Base function for the add, subtract, divide, and multiply functions. Handles all error checking
-Error arithmetic(const std::function<float(float, float)>& f, Atom args, Atom *result)
-{
-	Atom a, b;
-
-	check_args(args, 2, "ARITHMETIC");
-
-	a = head(args);
-	b = head(tail(args));
-
-	if (!(is_number(a) && is_number(b))) return Error{ Error::TYPE, "Expected number", "ARITHMETIC"};
-
-	// For adding ints and floats
-	if (a.type == Atom::INTEGER)
-	{
-		if (b.type == Atom::INTEGER)
-		{
-			*result = make_int(f(a.value.integer, b.value.integer));
-		}
-		else
-		{
-			*result = make_float(f(a.value.integer, b.value.float_));
-		}
-	}
-	else
-	{
-		if (b.type == Atom::INTEGER)
-		{
-			*result = make_float(f(a.value.float_, b.value.integer));
-		}
-		else
-		{
-			*result = make_float(f(a.value.float_, b.value.float_));
-		}
-	}
-
-	return NOERR;
-}
-
-Error function_add(Atom args, Atom* result)
-{
-	auto add = [](float x, float y) { return x + y; };
-
-	return arithmetic(add, args, result);
-}
-
-Error function_subtract(Atom args, Atom* result)
-{
-	auto subtract = [](float x, float y) { return x - y; };
-
-	return arithmetic(subtract, args, result);
-}
-
-Error function_multiply(Atom args, Atom* result)
-{
-	auto multiply = [](float x, float y) { return x * y; };
-
-	return arithmetic(multiply, args, result);
-}
-
-Error function_divide(Atom args, Atom* result)
-{
-	auto divide = [](float x, float y) { return x / y; };
-
-	return arithmetic(divide, args, result);
 }
 
 Error function_type(Atom args, Atom* result)

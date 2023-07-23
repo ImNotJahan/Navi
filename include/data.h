@@ -52,3 +52,5 @@ static Atom symbol_table = null;
 
 // Returns length of bignum
 int bignum_length(Atom bignum);
+// Creates a bignum from an integer
+Atom int_to_bignum(int integer);

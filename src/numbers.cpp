@@ -31,3 +31,33 @@ int int_length(int integer)
     if(integer < 0) return trunc(log10(abs(integer))) + 2;
     return trunc(log10(integer)) + 1;
 }
+
+int remove_first_digit(int integer)
+{
+    int new_number = 0;
+    bool negative = false;
+
+    if (integer < 0)
+    {
+        integer = std::abs(integer);
+        negative = true;
+    }
+
+    int i = 0;
+    while (integer > 9)
+    {
+        new_number += nth_digit(integer, 0) * std::pow(10, i);
+        integer /= 10;
+        i++;
+    }
+
+    if (negative) integer *= -1;
+
+    return new_number;
+}
+
+int nth_digit(int integer, int nth)
+{
+    int temp = integer / std::pow(10, nth);
+    return temp % 10;
+}

@@ -129,10 +129,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\bignum_math.cpp" />
     <ClCompile Include="src\data.cpp" />
     <ClCompile Include="src\environment.cpp" />
     <ClCompile Include="src\evaluate.cpp" />
     <ClCompile Include="src\functions.cpp" />
+    <ClCompile Include="src\functions_math.cpp" />
     <ClCompile Include="src\garbage_collection.cpp" />
     <ClCompile Include="src\library.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -142,6 +144,7 @@
     <ClCompile Include="src\strings.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\bignum_math.h" />
     <ClInclude Include="include\data.h" />
     <ClInclude Include="include\evaluate.h" />
     <ClInclude Include="include\functions.h" />
