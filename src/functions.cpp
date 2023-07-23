@@ -338,17 +338,13 @@ Error function_bignum(Atom args, Atom* result)
 	if (value.type == Atom::PAIR)
 	{
 		if (!listp(value)) return Error{ Error::SYNTAX, "Improper list", "BIGNUM" };
-		if (list_length(value) < 2) return Error{ Error::SYNTAX, "List must contain at least decimal position and one integer", "BIGNUM" };
+		if (list_length(value) < 1) return Error{ Error::SYNTAX, "List must contain at least one integer", "BIGNUM" };
 		
 		if (!list_of_type_p(value, Atom{ Atom::INTEGER })) return Error{ Error::SYNTAX, "List must only contain integers", "BIGNUM" };
 
-		int decimal_pos = head(value).value.integer;
-		if (decimal_pos < -1) return Error{ Error::SYNTAX, "Decimal position must be greater than -1", "BIGNUM" };
-		if (decimal_pos > bignum_length(value) - 1) return Error{ Error::SYNTAX, "Decimal position cannot be greater than number length", "BIGNUM" };
+		// Loop through pair to make sure no ints after head are negative (eg 1234 -4832)
 
-		// Loop through pair to make sure no ints after head are negative (eg -1 1234 -4832)
-
-		Atom possible_bignum = tail(tail(copy_list(value))); // Ignore first two ints (decimal pos and head)
+		Atom possible_bignum = tail(copy_list(value)); // Ignore first int (head)
 		while (!nullp(possible_bignum))
 		{
 			if (head(possible_bignum).value.integer < 0) return Error{ Error::SYNTAX, "Bignum integer parts should not be negative after head", "BIGNUM" };
@@ -371,7 +367,7 @@ Error function_bignum(Atom args, Atom* result)
 	}
 	else if (value.type == Atom::INTEGER)
 	{
-		bignum = cons(make_int(-1), cons(value, null));
+		bignum = cons(value, null);
 		bignum.type = Atom::BIGNUM;
 
 		*result = bignum;

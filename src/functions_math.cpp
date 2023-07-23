@@ -2,8 +2,6 @@
 #include "../include/functions.h"
 #include "../include/bignum_math.h"
 
-// God this is ugly
-
 Error function_add(Atom args, Atom* result)
 {
 	Atom a, b;
@@ -52,7 +50,7 @@ Error function_add(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::FLOAT)
 		{
-			// To support
+			return Error{ Error::SYNTAX, "Can't add float and bignum", "+" };
 		}
 	}
 	else if(a.type == Atom::FLOAT)
@@ -67,7 +65,7 @@ Error function_add(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::BIGNUM)
 		{
-			// To support
+			return Error{ Error::SYNTAX, "Can't add float and bignum", "+" };
 		}
 	}
 
@@ -122,7 +120,7 @@ Error function_subtract(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::FLOAT)
 		{
-			// To support
+			return Error{ Error::SYNTAX, "Can't subtract float and bignum", "-" };
 		}
 	}
 	else if(a.type == Atom::FLOAT)
@@ -137,7 +135,7 @@ Error function_subtract(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::BIGNUM)
 		{
-			// To support
+			return Error{ Error::SYNTAX, "Can't subtract float and bignum", "-" };
 		}
 	}
 
@@ -194,7 +192,7 @@ Error function_multiply(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::FLOAT)
 		{
-			// To support
+			return Error{ Error::SYNTAX, "Can't multiply float and bignum", "*" };
 		}
 	}
 	else if (a.type == Atom::FLOAT)
@@ -209,7 +207,7 @@ Error function_multiply(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::BIGNUM)
 		{
-			// To support
+			return Error{ Error::SYNTAX, "Can't multiply float and bignum", "*" };
 		}
 	}
 
@@ -226,6 +224,20 @@ Error function_divide(Atom args, Atom* result)
 	b = head(tail(args));
 
 	if (!(is_number(a) && is_number(b))) return Error{ Error::TYPE, "Expected number", "/" };
+
+	switch (b.type)
+	{
+		case Atom::INTEGER:
+			if(b.value.integer == 0) return Error{ Error::SYNTAX, "Can't divide a number by zero", "/" };
+			break;
+
+		case Atom::FLOAT:
+			if (b.value.float_ == 0) return Error{ Error::SYNTAX, "Can't divide a number by zero", "/" };
+			break;
+
+		case Atom::BIGNUM:
+			if(head(b).value.integer == 0) return Error{ Error::SYNTAX, "Can't divide a number by zero", "/" };
+	}
 
 	if (a.type == Atom::INTEGER)
 	{
@@ -255,7 +267,7 @@ Error function_divide(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::FLOAT)
 		{
-			// To support
+			return Error{ Error::SYNTAX, "Can't divide float and bignum", "/" };
 		}
 	}
 	else if (a.type == Atom::FLOAT)
@@ -270,7 +282,7 @@ Error function_divide(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::BIGNUM)
 		{
-			// To support
+			return Error{ Error::SYNTAX, "Can't divide float and bignum", "/" };
 		}
 	}
 
