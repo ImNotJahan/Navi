@@ -260,7 +260,7 @@ Atom make_bignum(std::string number)
 
 int bignum_length(Atom bignum)
 {
-	return (list_length(bignum) - 2) * 9 + int_length(list_get(bignum, 1).value.integer);
+	return (list_length(copy_list(bignum)) - 2) * 9 + int_length(list_get(copy_list(bignum), 1).value.integer);
 }
 
 Atom int_to_bignum(int integer)

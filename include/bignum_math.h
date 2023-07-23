@@ -7,3 +7,11 @@ Atom divide_bignums(Atom a, Atom b);
 
 // Returns if a < b
 bool bignum_less(Atom a, Atom b);
+
+// Multiplies bignum by 10
+Atom shift_bignum(Atom bignum);
+// Multiplies bignum by 10^times
+Atom shift_bignum(Atom bignum, int times);
+
+// Splits bignum at middle into low and high. Middle is actually numbers from right
+void split_bignum(Atom bignum, int middle, Atom* low, Atom* high);

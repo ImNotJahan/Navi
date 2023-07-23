@@ -238,20 +238,69 @@ Atom subtract_bignums(Atom a, Atom b)
 	return result;
 }
 
-// Also very slow
 Atom multiply_bignums(Atom a, Atom b)
 {
 	Atom result = int_to_bignum(0);
 
-	while (head(tail(b)).value.integer != 0)
+	// Loop through digits in b
+	int depth = 0;
+	while (!nullp(b))
 	{
-		result = add_bignums(result, copy_list(a));
-		b = subtract_bignums(b, int_to_bignum(1));
+		Atom high, low;
+		split_bignum(copy_list(b), 1, &low, &high);
+
+		Atom copy = copy_list(a);
+		int multicand = head(tail(high)).value.integer;
+		int index = depth;
+		while (!nullp(copy))
+		{
+			Atom h, l;
+
+			split_bignum(copy_list(copy), 1, &l, &h);
+			Atom prod = int_to_bignum(head(tail(h)).value.integer * multicand);
+			prod = shift_bignum(prod, index);
+
+			result = add_bignums(result, prod);
+
+			copy = l;
+			index++;
+		}
+
+		b = low;
+		depth++;
 	}
 
 	return result;
-}
+	/*
+	say_expr(a); say_expr(make_character(' '));
 
+	int lengths[2] = { bignum_length(copy_list(a)), bignum_length(copy_list(b)) };
+
+	if (lengths[0] + lengths[1] < 7)
+	{
+		say_expr(null);
+		return int_to_bignum(head(tail(a)).value.integer * head(tail(b)).value.integer);
+	}
+	
+	int middle = std::max(lengths[0], lengths[1]);
+	middle /= 2;
+
+	middle = std::min(std::min((lengths[0] - 1), (lengths[1] - 1)), middle);
+
+	Atom low1, low2, high1, high2;
+
+	split_bignum(copy_list(a), middle, &low1, &high1);
+	split_bignum(copy_list(b), middle, &low2, &high2);
+
+	say_expr(low1); say_expr(make_character(' '));
+	say_expr(high1); say_expr(make_character(' '));
+
+	Atom z0 = multiply_bignums(low1, low2);
+	Atom z1 = multiply_bignums(add_bignums(low1, high1), add_bignums(low2, high2));
+	Atom z2 = shift_bignum(multiply_bignums(high1, high2), middle * 2);
+
+	return add_bignums(z0, add_bignums(z2, shift_bignum(subtract_bignums(subtract_bignums(z1, z2), z0), middle)));*/
+}
 
 // Very slow, but works for now
 Atom divide_bignums(Atom a, Atom b)
@@ -302,4 +351,115 @@ bool bignum_less(Atom a, Atom b)
 	}
 
 	return a_val < b_val;
+}
+
+Atom shift_bignum(Atom bignum, int times)
+{
+	for (int i = 0; i < times; i++)
+	{
+		bignum = shift_bignum(bignum);
+	}
+
+	return bignum;
+}
+
+Atom shift_bignum(Atom bignum)
+{
+	Atom decimal = head(bignum);
+	Atom result = null;
+	bignum = tail(bignum);
+	
+	list_reverse(&bignum);
+
+	int carry = 0;
+	while (!nullp(bignum))
+	{
+		int num = head(bignum).value.integer;
+
+		if (int_length(num) < 9)
+		{
+			result = cons(make_int(num * 10 + carry), result);
+			carry = 0;
+		}
+		else
+		{
+			result = cons(make_int(num % 100000000 * 10 + carry), result);
+			carry = num / 100000000;
+		}
+
+		bignum = tail(bignum);
+	}
+
+	if (carry != 0) result = cons(make_int(carry), result);
+
+	result = cons(decimal, result);
+	result.type = Atom::BIGNUM;
+
+	return result;
+}
+
+void split_bignum(Atom bignum, int middle, Atom* low, Atom* high)
+{
+	int skip = bignum_length(bignum) - middle;
+
+	bignum = tail(bignum);
+	list_reverse(&bignum);
+
+	*low = null;
+	*high = null;
+
+	int carry = 0;
+	int offset = 0;
+	
+	for (int i = 0; i < middle;)
+	{
+		int num = head(bignum).value.integer;
+		bool last = nullp(tail(bignum));
+		
+		if (!last && 9 < middle || last && int_length(num) < middle)
+		{
+			*high = cons(make_int(num), *high);
+			if (last) i += int_length(num);
+			else i += 9;
+		}
+		else
+		{
+			offset = (int)pow(10, middle);
+			*high = cons(make_int(num % offset), *high);
+			carry = num / offset;
+
+			if (last) offset = int_length(carry);
+			else offset = 8;
+
+			i += middle;
+		}
+
+		bignum = tail(bignum);
+	}
+	
+	int a = (int)pow(10, 9 - offset);
+	int b = (int)pow(10, offset);
+
+	*high = cons(make_int(-1), *high);
+	high->type = Atom::BIGNUM;
+
+	while (!nullp(bignum))
+	{
+		int v = head(bignum).value.integer;
+		int num = carry; 
+
+		num += (v % a) * b;
+		carry = (v / a);
+
+		*low = cons(make_int(num), *low);
+
+		bignum = tail(bignum);
+	}
+
+	if (carry != 0) *low = cons(make_int(carry), *low);
+
+	if (nullp((*low))) return;
+
+	*low = cons(make_int(-1), *low);
+	low->type = Atom::BIGNUM;
 }
