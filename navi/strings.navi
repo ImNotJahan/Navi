@@ -2,15 +2,3 @@
 	(if (= start 0)
 		str
 		(substr (string (tail str)) (- start 1))))
-		
-(set (=string a b)
-	(check_type a '(string pair) "=string")
-	(check_type b '(string pair) "=string")
-	
-	(if (= (head a) (head b))
-		(if (and (pair? (tail a)) (pair? (tail b)))
-			(=string (tail a) (tail b))
-			(if (or (pair? (tail a)) (pair? (tail b)))
-				false
-				true))
-		false))
