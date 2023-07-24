@@ -288,3 +288,20 @@ Error function_divide(Atom args, Atom* result)
 
 	return NOERR;
 }
+
+Error function_shift(Atom args, Atom* result)
+{
+	check_args(args, 2, "SHIFT");
+
+	if (!both_type(head(args), head(tail(args)), INTEGER))
+		return Error{ Error::TYPE, "Expected integers" };
+
+	int number, shift;
+	number = head(args).value.integer;
+	shift = head(tail(args)).value.integer;
+
+	if(shift > 0) *result = make_int(number << shift);
+	else *result = make_int(number >> -shift);
+
+	return NOERR;
+}

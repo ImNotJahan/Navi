@@ -54,6 +54,9 @@ Error function_denominator(Atom args, Atom* result);
 // Throw error
 Error function_error(Atom args, Atom* result);
 
+// Bit shifts number
+Error function_shift(Atom args, Atom* result);
+
 #define is_number(a) (a.type == Atom::INTEGER || a.type == Atom::FLOAT || a.type == Atom::BIGNUM)
 
 // Return if a and b both are type t
