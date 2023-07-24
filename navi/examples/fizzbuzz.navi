@@ -1,4 +1,5 @@
-(load "navi/math.navi")
+~ remainder has to be loaded as well as divisible uses it
+(load "navi/math.navi" "divisible remainder")
 
 (set (fizzbuzz x)
 	(set (fizzbuzz_helper x i)

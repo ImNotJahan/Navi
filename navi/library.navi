@@ -126,7 +126,7 @@
 			(+ctos str1 (head str2))
 			(tail str2))
 		str1))
-		
+	
 ~ All the +strings makes this slow when an error does happen. Hopefully however, that's a rare case.
 (set (check_type variable type from)
 	(set (helper type) ~ Type error - from - expected type but got type of variable

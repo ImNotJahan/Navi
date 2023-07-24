@@ -1,8 +1,11 @@
 #include <fstream>
-#include <iostream>
+#include <vector>
+#include <sstream>
+
 #include "../include/main.h"
 #include "../include/library.h"
 #include "../include/evaluate.h"
+#include "../include/data.h"
 
 std::string read_file(std::string path)
 {
@@ -17,36 +20,81 @@ std::string read_file(std::string path)
 	return contents;
 }
 
-void interpret_file(Atom environment, std::string path, LogLevel logLevel)
+Error interpret_file(Atom environment, std::string path, LogLevel logLevel)
+{
+	return interpret_file(environment, path, logLevel, "*", "");
+}
+
+Error interpret_file(Atom environment, std::string path, LogLevel logLevel, std::string symbols_to_load)
+{
+	return interpret_file(environment, path, logLevel, symbols_to_load, "");
+}
+
+Error interpret_file(Atom environment, std::string path, LogLevel logLevel, std::string symbols_to_load, std::string prefix)
 {
 	std::string text = read_file(path);
 	
 	if (text == "")
 	{
-		std::cout << "File " << path << " doesn't exist or is empty" << std::endl;
-		return;
+		return Error{ Error::SYNTAX, "File " + path + " doesn't exist or is empty", "LOAD" };
 	}
 
-	if(logLevel == LogLevel::ALL) std::cout << "Reading " << path << std::endl;
+	std::vector<std::string> symbols;
+
+	if (symbols_to_load != "*")
+	{
+		std::stringstream ss(symbols_to_load);
+		std::string temp;
+		while (ss >> temp)
+		{
+			for (auto& c : temp) c = (char)toupper(c);
+			symbols.push_back(temp);
+		}
+	}
 
 	Atom expr;
-	while (read_expr(text, &text, &expr).type == Error::OK)
+	Error err;
+
+	// Read expressions in text
+	while ((err = read_expr(text, &text, &expr)).type == Error::OK)
 	{
+		// Skips evaluating (set) expression if not included in load
+		if (!symbols.empty())
+		{
+			if (listp(expr))
+			{
+				if (head(expr).type == Atom::SYMBOL && *head(expr).value.symbol == "SET")
+				{
+					if (head(tail(expr)).type == Atom::PAIR && head(head(tail(expr))).type == Atom::SYMBOL)
+					{
+						std::string name = *head(head(tail(expr))).value.symbol;
+
+						auto itr = std::find(symbols.begin(), symbols.end(), name);
+						if (itr == symbols.end())
+						{
+							continue;
+						}
+					}
+				}
+			}
+		}
+
 		Atom result;
-		Error err = evaluate_expr(expr, environment, &result);
+		err = evaluate_expr(expr, environment, &result);
 
 		if (err.type && err.type != Error::EMPTY && logLevel >= LogLevel::ERROR_ONLY)
-		{
-			std::cout << "Error in expression: " << std::endl;
-			say_expr(expr);
-			std::cout << std::endl;
-			say_err(err);
-			std::cout << std::endl;
+		{			
+			return err;
 		}
 		else if(logLevel == LogLevel::ALL)
 		{
 			say_expr(result);
-			std::cout << std::endl;
+			say_expr(make_character('\n'));
 		}
 	}
+
+	if (err.type && err.details != "Missing token") return err; // missing token can be caused by file ending
+	
+	// Empty error so nothing is printed to REPL
+	return Error{ Error::EMPTY };
 }

@@ -93,7 +93,7 @@ struct Error
 
 	// Details about the error
 	std::string details = "";
-	// Where the error came from
+	// What part of the interpreter was running when the error occured
 	std::string from = "";
 };
 

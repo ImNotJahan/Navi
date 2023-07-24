@@ -32,18 +32,26 @@ int main(int argc, char** argv)
 
 	std::string input;
 
+	Error err;
 	Atom env;
 	env = env_create(null);
 
 	set_default_environment(&env);
 
-	interpret_file(env, library_path, LogLevel::ERROR_ONLY);
+	err = interpret_file(env, library_path, LogLevel::ERROR_ONLY);
+
+	if (err.type && err.type != Error::EMPTY)
+	{
+		say_err(err);
+		std::cout << std::endl;
+	}
 
 	// If a program is specified, run it then exit
 	if (program_path != "")
 	{
-		interpret_file(env, program_path, LogLevel::ERROR_ONLY);
+		err = interpret_file(env, program_path, LogLevel::ERROR_ONLY);
 
+		if (err.type && err.type != Error::EMPTY) say_err(err);
 		return 0;
 	}
 
@@ -54,7 +62,6 @@ int main(int argc, char** argv)
 	// End REPL if no input
 	while (input != "")
 	{
-		Error err;
 		Atom expr, result;
 
 		err = read_expr(input, &input, &expr);
@@ -64,7 +71,7 @@ int main(int argc, char** argv)
 		if (!err.type) say_expr(result);
 		else say_err(err);
 
-		std::cout << std::endl;
+		if(err.type != Error::EMPTY) std::cout << std::endl;
 
 		std::cout << "> ";
 		std::getline(std::cin, input);

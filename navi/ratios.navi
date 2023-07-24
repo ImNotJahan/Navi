@@ -1,6 +1,6 @@
 ~ Adds math functions for ratios
 
-(load "navi/math.navi")
+(load "navi/math.navi" "exp gcd abs remainder")
 
 (set (+ratio a b)
 	(let ((nume (+ (* (denominator a) (numerator b)) (* (denominator b) (numerator a)))) (deno (* (denominator a) (denominator b))))

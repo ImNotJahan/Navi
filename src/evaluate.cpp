@@ -124,14 +124,24 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				}
 				else if (*operation.value.symbol == "LOAD")
 				{
-					if (list_length(args) != 1) return ARGNUM("LOAD");
+					int argLen = list_length(args);
+					if (argLen < 1 || argLen > 2) return ARGNUM("LOAD");
 
-					if (head(args).type != Atom::STRING) return Error{ Error::TYPE, "Expected string", "LOAD" };
+					if (head(args).type != Atom::STRING) return Error{ Error::TYPE, "Expected string for file path", "LOAD" };
+
+					std::string symbols_to_load = "*";
+
+					if (argLen == 2)
+					{
+						if (head(tail(args)).type != Atom::STRING) return Error{ Error::TYPE, "Expected string for symbols to load", "LOAD" };
+						symbols_to_load = to_string(head(tail(args)));
+					}
 
 					std::string path = to_string(head(args));
-					interpret_file(environment, path, LogLevel::ERROR_ONLY);
+					err = interpret_file(environment, path, LogLevel::ERROR_ONLY, symbols_to_load);
 
-					err = Error{ Error::EMPTY };
+					if(err.type != Error::EMPTY) return err;
+
 					continue;
 				}
 				else if (*operation.value.symbol == "REFLECT")
