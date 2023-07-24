@@ -98,9 +98,6 @@
 			true
 			(in x (tail list)))))
 	
-(set (even? x) (= (remainder x 2) 0))
-(set (odd? x) (not (even? x)))
-	
 (set (count n) (if (= n 0) 0 (+ 1 (count (- n 1)))))
 
 (set (break) (error "EMPTY"))
@@ -158,3 +155,8 @@
 		
 (set (=bignum a b) (=list a b))
 (set (=string a b) (=list a b))
+
+(set (assert a) 
+	(if a
+		true
+		(error "SYNTAX" "Test failed")))

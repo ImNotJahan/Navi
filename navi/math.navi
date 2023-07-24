@@ -6,7 +6,7 @@
 (set (remove_decimal f)
 	(set (remove_decimal_helper f i)
 		(if (= (int f) f)
-			(pair (int f) i)
+			(list (int f) i)
 			(remove_decimal_helper (* f 10) (+ i 1))))
 	(remove_decimal_helper f 0))
 
@@ -44,3 +44,6 @@
 (set (square num) (exp num 2))
 
 (set (abs x) (if (< x 0) (* x -1) x))
+
+(set (even? x) (= (remainder x 2) 0))
+(set (odd? x) (not (even? x)))

@@ -1,6 +1,6 @@
 ~ Adds math functions for ratios
 
-(load "navi/math.navi" "exp gcd abs remainder")
+(load "navi/math.navi" "exp gcd abs remainder remove_decimal")
 
 (set (+ratio a b)
 	(let ((nume (+ (* (denominator a) (numerator b)) (* (denominator b) (numerator a)))) (deno (* (denominator a) (denominator b))))
@@ -24,7 +24,7 @@
 	
 (set (ftor f)
 	(let ((r (remove_decimal f)))
-		(simplify_ratio (ratio (head r) (exp 10 (tail r))))))
+		(simplify_ratio (ratio (head r) (exp 10 (head (tail r)))))))
 		
 (set (itor i)
 	(ratio i 1))

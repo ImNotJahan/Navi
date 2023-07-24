@@ -157,18 +157,16 @@ Error function_multiply(Atom args, Atom* result)
 	{
 		if (b.type == Atom::INTEGER)
 		{
-			int a_val = a.value.integer;
-			int b_val = b.value.integer;
+			int val = a.value.integer * b.value.integer;
 
 			// Make sure multiplication won't go over nine digits
-			if (b_val != 0 && a_val > 999999999 / b_val ||
-				b_val != 0 && a_val < -999999999 / b_val)
+			if (a.value.integer != 0  && val / a.value.integer != b.value.integer)
 			{
 				*result = multiply_bignums(int_to_bignum(a.value.integer), int_to_bignum(b.value.integer));
 			}
 			else
 			{
-				*result = make_int(a_val * b_val);
+				*result = make_int(val);
 			}
 		}
 		else if (b.type == Atom::FLOAT)
