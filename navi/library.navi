@@ -72,13 +72,13 @@
 				(unary-map tail arg-lists))))
 		null))
 
-(expand (++ var) ;(set ,var (+ ,var 1)))
-(expand (-- var) ;(set ,var (- ,var 1)))
+(expand (++ var) ;(change ,var (+ ,var 1)))
+(expand (-- var) ;(change ,var (- ,var 1)))
 
-(expand (+= var value) ;(set ,var (+ ,var ,value)))
-(expand (-= var value) ;(set ,var (- ,var ,value)))
-(expand (*= var value) ;(set ,var (* ,var ,value)))
-(expand (/= var value) ;(set ,var (/ ,var ,value)))
+(expand (+= var value) ;(change ,var (+ ,var ,value)))
+(expand (-= var value) ;(change ,var (- ,var ,value)))
+(expand (*= var value) ;(change ,var (* ,var ,value)))
+(expand (/= var value) ;(change ,var (/ ,var ,value)))
 
 (expand (let defs . body)
     ;((lambda ,(map head defs) ,@body)
@@ -160,3 +160,24 @@
 	(if a
 		true
 		(error "SYNTAX" "Test failed")))
+		
+(set (type? value type) (u= (type_of value) type))
+
+(expand (repeat times . body)
+	;(when (> ,times 0)
+		(do ,@body)
+		(repeat (- ,times 1) ,@body)))
+
+(expand (while predicate . body)
+	;(when ,predicate
+		(do ,@body)
+		(while ,predicate ,@body)))
+
+(expand (for init predicate each . body)
+	;(do
+		,init
+		(while ,predicate
+			,@body
+			,each)))
+
+(set (sayline a) (say a) (newline))
