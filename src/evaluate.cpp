@@ -74,6 +74,22 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					}
 					else return Error{ Error::TYPE, "Expected symbol or pair", "SET" };
 				}
+				else if (*operation.value.symbol == "CHANGE")
+				{
+					if (list_length(args) != 2) return ARGNUM("CHANGE");
+
+					Atom symbol = head(args);
+
+					if (symbol.type != Atom::SYMBOL) return Error{ Error::TYPE, "Expected symbol", "CHANGE" };
+
+					stack = make_frame(stack, environment, null);
+					list_set(stack, 2, operation);
+					list_set(stack, 4, symbol);
+
+					expr = head(tail(args));
+
+					continue;
+				}
 				else if (*operation.value.symbol == "LAMBDA")
 				{
 					if (list_length(args) < 2) return ARGNUM("LAMBDA");
@@ -388,6 +404,16 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 			*expr = cons(sym("QUOTE"), cons(symbol, null));
 
 			return NOERR;
+		}
+		else if (*operation.value.symbol == "CHANGE")
+		{
+			Atom symbol = list_get(*stack, 4);
+
+			Error err = env_change(*environment, symbol, *result);
+			*stack = head((*stack));
+			*expr = cons(sym("QUOTE"), cons(symbol, null));
+
+			return err;
 		}
 		else if (*operation.value.symbol == "IF")
 		{

@@ -55,3 +55,28 @@ Error env_set(Atom environment, Atom symbol, Atom value)
 
 	return NOERR;
 }
+
+Error env_change(Atom environment, Atom symbol, Atom value)
+{
+	Atom parent = head(environment);
+	Atom bindings = tail(environment);
+	Atom binding = null;
+
+	// If binding already exists in environment, give it new value
+	while (!nullp(bindings))
+	{
+		binding = head(bindings);
+		if (*head(binding).value.symbol == *symbol.value.symbol)
+		{
+			tail(binding) = value;
+
+			return NOERR;
+		}
+
+		bindings = tail(bindings);
+	}
+
+	if (nullp(parent)) return Error{ Error::UNBOUND, ("No symbol " + *symbol.value.symbol) };
+
+	return env_change(parent, symbol, value); // Tries in parent environment
+}

@@ -110,6 +110,8 @@ Atom env_create(Atom parent);
 Error env_get(Atom environment, Atom symbol, Atom* result);
 // Sets symbol to value in environment
 Error env_set(Atom environment, Atom symbol, Atom value);
+// Changes value of symbol in environment or parent environments
+Error env_change(Atom environment, Atom symbol, Atom value);
 
 // Runs func with arguments
 Error apply(Atom func, Atom args, Atom* result);
