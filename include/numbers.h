@@ -11,3 +11,5 @@ int int_length(int integer);
 int remove_first_digit(int integer);
 // Gets nth digit of a number
 int nth_digit(int integer, int nth);
+
+int gcd(int n1, int n2);

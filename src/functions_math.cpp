@@ -241,8 +241,11 @@ Error function_divide(Atom args, Atom* result)
 	{
 		if (b.type == Atom::INTEGER)
 		{
-			// Division can't overflow
-			*result = make_int(a.value.integer / b.value.integer);
+			// Division can't overflow so no need for check
+			// Int division will return ratio if result is not int
+			int remainder = a.value.integer % b.value.integer;
+			if (remainder == 0) *result = make_int(a.value.integer / b.value.integer);
+			else *result = make_ratio(a.value.integer, b.value.integer, true);
 		}
 		else if (b.type == Atom::FLOAT)
 		{

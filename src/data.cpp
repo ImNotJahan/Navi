@@ -207,6 +207,19 @@ Error make_string(const std::string parameter_str, Atom* result)
 
 Atom make_ratio(int numerator, int denominator)
 {
+	return make_ratio(numerator, denominator, false);
+}
+
+Atom make_ratio(int numerator, int denominator, bool simplify)
+{
+	if (simplify)
+	{
+		int ratio_gcd = gcd(numerator, denominator);
+
+		numerator /= ratio_gcd;
+		denominator /= ratio_gcd;
+	}
+
 	Atom atom = Atom{ Atom::RATIO };
 	atom.value.ratio.numerator = numerator;
 	atom.value.ratio.denominator = denominator;

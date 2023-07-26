@@ -181,3 +181,5 @@
 			,each)))
 
 (set (sayline a) (say a) (newline))
+
+(set (// a b) (int (/ a b)))

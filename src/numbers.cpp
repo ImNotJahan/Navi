@@ -61,3 +61,16 @@ int nth_digit(int integer, int nth)
     int temp = integer / std::pow(10, nth);
     return temp % 10;
 }
+int gcd(int a, int b)
+{
+    int c;
+
+    while (a % b != 0)
+    {
+        c = a % b;
+        a = b;
+        b = c;
+    }
+
+    return b;
+}
