@@ -242,14 +242,16 @@ Atom multiply_bignums(Atom a, Atom b)
 		{
 			Atom h, l;
 
-			split_bignum(copy_list(copy), 1, &l, &h);
+			int split_at = std::min(bignum_length(copy), 8);
+
+			split_bignum(copy_list(copy), split_at, &l, &h);
 			Atom prod = int_to_bignum(head(h).value.integer * multicand);
 			prod = shift_bignum(prod, index);
 
 			result = add_bignums(result, prod);
 
 			copy = l;
-			index++;
+			index += split_at;
 		}
 
 		b = low;
@@ -257,6 +259,30 @@ Atom multiply_bignums(Atom a, Atom b)
 	}
 
 	return result;
+}
+
+Atom karatsuba_bignums(Atom a, Atom b)
+{
+	int lengths[2] = { bignum_length(copy_list(a)), bignum_length(copy_list(b)) };
+
+	if (lengths[0] < 2 || lengths[1] < 2)
+	{
+		return multiply_bignums(a, b);
+	}
+
+	int middle = std::max(lengths[0], lengths[1]);
+	middle /= 2;
+	middle = std::min(std::min((lengths[0] - 1), (lengths[1] - 1)), middle);
+
+	Atom low1, low2, high1, high2;
+	split_bignum(copy_list(a), middle, &low1, &high1);
+	split_bignum(copy_list(b), middle, &low2, &high2);
+
+	// This looks quite terrifying, but it's just acz^2+bcz+adz+bd
+	// Where low1 = a, high1 = b, low2 = c, high2 = d, z = 10^middle
+	return add_bignums(shift_bignum(karatsuba_bignums(low1, low2), middle * 2),
+		add_bignums(shift_bignum(karatsuba_bignums(high1, low2), middle), add_bignums(shift_bignum(karatsuba_bignums(low1, high2), middle),
+			karatsuba_bignums(high1, high2))));
 }
 
 // Very slow, but works for now
@@ -382,7 +408,7 @@ void split_bignum(Atom bignum, int middle, Atom* low, Atom* high)
 			carry = num / offset;
 
 			if (last) offset = int_length(carry);
-			else offset = 8;
+			else offset = 9 - middle;
 
 			i += middle;
 		}

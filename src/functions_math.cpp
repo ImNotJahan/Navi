@@ -162,7 +162,7 @@ Error function_multiply(Atom args, Atom* result)
 			// Make sure multiplication won't go over nine digits
 			if (a.value.integer != 0  && val / a.value.integer != b.value.integer)
 			{
-				*result = multiply_bignums(int_to_bignum(a.value.integer), int_to_bignum(b.value.integer));
+				*result = karatsuba_bignums(int_to_bignum(a.value.integer), int_to_bignum(b.value.integer));
 			}
 			else
 			{
@@ -182,11 +182,11 @@ Error function_multiply(Atom args, Atom* result)
 	{
 		if (b.type == Atom::BIGNUM)
 		{
-			*result = multiply_bignums(a, b);
+			*result = karatsuba_bignums(a, b);
 		}
 		else if (b.type == Atom::INTEGER)
 		{
-			*result = multiply_bignums(a, int_to_bignum(b.value.integer));
+			*result = karatsuba_bignums(a, int_to_bignum(b.value.integer));
 		}
 		else if (b.type == Atom::FLOAT)
 		{

@@ -5,6 +5,10 @@ Atom subtract_bignums(Atom a, Atom b);
 Atom multiply_bignums(Atom a, Atom b);
 Atom divide_bignums(Atom a, Atom b);
 
+// Faster method of multiplication
+// https://en.wikipedia.org/wiki/Karatsuba_algorithm
+Atom karatsuba_bignums(Atom a, Atom b);
+
 // Returns if a < b
 bool bignum_less(Atom a, Atom b);
 
