@@ -287,6 +287,55 @@ Error function_divide(Atom args, Atom* result)
 	return NOERR;
 }
 
+Error function_remainder(Atom args, Atom* result)
+{
+	Atom a, b;
+
+	check_args(args, 2, "REMAINDER");
+
+	a = head(args);
+	b = head(tail(args));
+
+	if (!(a.type == Atom::INTEGER || a.type == Atom::BIGNUM) ||
+		!(b.type == Atom::INTEGER || b.type == Atom::BIGNUM)) return Error{ Error::TYPE, "Expected integer or bignum", "REMAINDER" };
+
+	switch (b.type)
+	{
+		case Atom::INTEGER:
+			if (b.value.integer == 0) return Error{ Error::SYNTAX, "Can't divide a number by zero", "REMAINDER" };
+			break;
+
+		case Atom::BIGNUM:
+			if (head(b).value.integer == 0) return Error{ Error::SYNTAX, "Can't divide a number by zero", "REMAINDER" };
+	}
+
+	if (a.type == Atom::INTEGER)
+	{
+		if (b.type == Atom::INTEGER)
+		{
+			// Division can't overflow
+			*result = make_int(a.value.integer % b.value.integer);
+		}
+		else if (b.type == Atom::BIGNUM)
+		{
+			*result = tail(divide_bignums(int_to_bignum(a.value.integer), b));
+		}
+	}
+	else if (a.type == Atom::BIGNUM)
+	{
+		if (b.type == Atom::BIGNUM)
+		{
+			*result = tail(divide_bignums(a, b));
+		}
+		else if (b.type == Atom::INTEGER)
+		{
+			*result = tail(divide_bignums(a, int_to_bignum(b.value.integer)));
+		}
+	}
+
+	return NOERR;
+}
+
 Error function_shift(Atom args, Atom* result)
 {
 	check_args(args, 2, "SHIFT");

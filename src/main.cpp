@@ -106,4 +106,5 @@ void set_default_environment(Atom* env)
 	env_set(*env, sym("BIGNUM"), make_function(function_bignum));
 	env_set(*env, sym("LISTEN"), make_function(function_listen));
 	env_set(*env, sym("SHIFT"), make_function(function_shift));
+	env_set(*env, sym("REMAINDER"), make_function(function_remainder));
 }

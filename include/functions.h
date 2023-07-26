@@ -15,6 +15,8 @@ Error function_subtract(Atom args, Atom* result);
 Error function_multiply(Atom args, Atom* result);
 Error function_divide(Atom args, Atom* result);
 
+Error function_remainder(Atom args, Atom* result);
+
 
 // Return type of arg as symbol
 Error function_type(Atom args, Atom* result);
