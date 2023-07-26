@@ -109,20 +109,8 @@
 	;(if ,p (do ,@body) null))
 	
 (set (newline) (say #\n))
-		
-~ add char to string
-(set (+ctos str char)
-	(check_type str 'STRING "+ctos")
-	(check_type char 'CHARACTER "+ctos")
 	
-	(string (append str (pair char null))))
-
-(set (+string str1 str2)
-	(if (non_null? str2)
-		(+string 
-			(+ctos str1 (head str2))
-			(tail str2))
-		str1))
+(load "navi/strings.navi" "+ctos +string")
 	
 ~ All the +strings makes this slow when an error does happen. Hopefully however, that's a rare case.
 (set (check_type variable type from)

@@ -2,3 +2,33 @@
 	(if (= start 0)
 		str
 		(substr (string (tail str)) (- start 1))))
+		
+~ add char to string
+(set (+ctos str char)
+	(check_type str 'STRING "+ctos")
+	(check_type char 'CHARACTER "+ctos")
+	
+	(string (append str (pair char null))))
+
+(set (+string str1 str2)
+	(if (non_null? str2)
+		(+string 
+			(+ctos str1 (head str2))
+			(tail str2))
+		str1))
+		
+~ char to int
+(set (ctoi char)
+	(check_type char 'CHARACTER "ctoi")
+	
+	(if (= char #0) 0
+	(if (= char #1) 1
+	(if (= char #2) 2
+	(if (= char #3) 3
+	(if (= char #4) 4
+	(if (= char #5) 5
+	(if (= char #6) 6
+	(if (= char #7) 7
+	(if (= char #8) 8
+	(if (= char #9) 9
+		(error "SYNTAX" "Expected digit" "ctoi"))))))))))))
