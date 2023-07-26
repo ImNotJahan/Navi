@@ -162,12 +162,31 @@
 		(while ,predicate ,@body)))
 
 (expand (for init predicate each . body)
+	(if (u= predicate 'IN)
+		;(for_each ,init ,each ,@body)
+		;(do
+			,init
+			(while ,predicate
+				,@body
+				,each))))
+
+(expand (for_each item items . body)
 	;(do
-		,init
-		(while ,predicate
+		(set items ,items)
+		(while (non_null? items)
+			(set ,item (head items))
 			,@body
-			,each)))
+			(change items (tail items)))))
 
 (set (sayline a) (say a) (newline))
 
 (set (// a b) (int (/ a b)))
+
+(set (range start end)
+	(let ((result null))
+		(if (< start end)
+			(for (set i start) (<= i end) (++ i)
+				(change result (pair i result)))
+			(for (set i start) (>= i end) (-- i)
+				(change result (pair i result))))
+		(reverse result)))
