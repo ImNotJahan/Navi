@@ -285,19 +285,39 @@ Atom karatsuba_bignums(Atom a, Atom b)
 			karatsuba_bignums(high1, high2))));
 }
 
-// Very slow, but works for now
-Atom divide_bignums(Atom a, Atom b)
+// Uses long division
+Atom divide_bignums(Atom dividend, Atom divisor)
 {
 	Atom quotient = int_to_bignum(0);
 
-	// !(a < b) = a >= b
-	while (!(bignum_less(a, b)))
+	// While the dividend is still larger than the divisor
+	while (bignum_gore(dividend, divisor))
 	{
-		a = subtract_bignums(copy_list(a), copy_list(b));
-		quotient = add_bignums(quotient, int_to_bignum(1));
+		Atom shifted_divisor = copy_list(divisor);
+		Atom temp_divisor = shift_bignum(copy_list(shifted_divisor));
+		int shift = 0;
+		
+		// Shift the divisor until it can't be without being larger than the dividend
+		// Ex. in 100/3, 3 -> 30
+		while (bignum_gore(dividend, temp_divisor))
+		{
+			shifted_divisor = copy_list(temp_divisor);
+
+			temp_divisor = shift_bignum(temp_divisor);
+			shift++;
+		}
+
+		// Subtract dividend by shifted divisor until can't without divisor being negative
+		while (bignum_gore(dividend, shifted_divisor))
+		{
+			dividend = subtract_bignums(dividend, copy_list(shifted_divisor));
+			// Increase quotient each time dividend subtracted by 10^shift
+			quotient = add_bignums(quotient, shift_bignum(int_to_bignum(1), shift));
+		}
 	}
 
-	return quotient;
+	// Return quotient, and dividend which is now remainder
+	return cons(quotient, dividend);
 }
 
 bool bignum_less(Atom a, Atom b)
@@ -334,6 +354,11 @@ bool bignum_less(Atom a, Atom b)
 	}
 
 	return a_val < b_val;
+}
+
+bool bignum_gore (Atom a, Atom b)
+{
+	return !bignum_less(a, b);
 }
 
 Atom shift_bignum(Atom bignum, int times)

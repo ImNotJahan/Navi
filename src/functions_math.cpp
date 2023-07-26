@@ -250,18 +250,18 @@ Error function_divide(Atom args, Atom* result)
 		}
 		else if (b.type == Atom::BIGNUM)
 		{
-			*result = divide_bignums(int_to_bignum(a.value.integer), b);
+			*result = head(divide_bignums(int_to_bignum(a.value.integer), b));
 		}
 	}
 	else if (a.type == Atom::BIGNUM)
 	{
 		if (b.type == Atom::BIGNUM)
 		{
-			*result = divide_bignums(a, b);
+			*result = head(divide_bignums(a, b));
 		}
 		else if (b.type == Atom::INTEGER)
 		{
-			*result = divide_bignums(a, int_to_bignum(b.value.integer));
+			*result = head(divide_bignums(a, int_to_bignum(b.value.integer)));
 		}
 		else if (b.type == Atom::FLOAT)
 		{

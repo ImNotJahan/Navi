@@ -11,6 +11,8 @@ Atom karatsuba_bignums(Atom a, Atom b);
 
 // Returns if a < b
 bool bignum_less(Atom a, Atom b);
+// gore -> greater or equal. If a >= b
+bool bignum_gore(Atom a, Atom b);
 
 // Multiplies bignum by 10
 Atom shift_bignum(Atom bignum);
