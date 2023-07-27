@@ -97,7 +97,7 @@ struct Error
 	std::string from = "";
 };
 
-#define NOERR Error{ Error::OK }
+static const Error NOERR = Error{ Error::OK };
 #define ARGNUM(from) Error{ Error::ARGS, "Wrong number of arguments", from }
 
 // Reads and then sends expression to correct function

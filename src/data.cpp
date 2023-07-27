@@ -6,8 +6,9 @@
 
 Allocation* global_allocations = NULL;
 
+static const size_t COLLECTION_MIN = 1024 * 1024;
 static size_t bytesAllocated = 0;
-static size_t nextCollection = 1024 * 1024;
+static size_t nextCollection = COLLECTION_MIN;
 
 // Implementing here so global_allocations only has to be referenced in data.cpp
 void collect()
@@ -35,7 +36,7 @@ void collect()
 		}
 	}
 	
-	nextCollection = bytesAllocated * 1.15;
+	nextCollection = std::max((size_t) (bytesAllocated * 1.15), COLLECTION_MIN);
 }
 
 size_t getBytesAllocated()
@@ -329,6 +330,30 @@ Atom copy_list(Atom list)
 
 Atom list_get(Atom list, int index)
 {
+	switch (index)
+	{
+		case 0:
+			return head(list);
+
+		case 1:
+			return head(tail(list));
+
+		case 2:
+			return head(tail(tail(list)));
+
+		case 3:
+			return head(tail(tail(tail(list))));
+
+		case 4:
+			return head(tail(tail(tail(tail(list)))));
+
+		case 5:
+			return head(tail(tail(tail(tail(tail(list))))));
+
+		case 6:
+			return head(tail(tail(tail(tail(tail(tail(list)))))));
+	}
+
 	while (index-- != 0) list = tail(list);
 	return head(list);
 }
@@ -346,8 +371,42 @@ bool list_of_type_p(Atom list, Atom type)
 
 void list_set(Atom list, int index, Atom value)
 {
-	while (index-- != 0) list = tail(list);
-	head(list) = value;
+	switch (index)
+	{
+		case 0:
+			head(list) = value;
+			break;
+
+		case 1:
+			head(tail(list)) = value;
+			break;
+
+		case 2:
+			head(tail(tail(list))) = value;
+			break;
+
+		case 3:
+			head(tail(tail(tail(list)))) = value;
+			break;
+
+		case 4:
+			head(tail(tail(tail(tail(list))))) = value;
+			break;
+
+		case 5:
+			head(tail(tail(tail(tail(tail(list)))))) = value;
+			break;
+
+		case 6:
+			head(tail(tail(tail(tail(tail(tail(list))))))) = value;
+			break;
+
+		default:
+			while (index-- != 0) list = tail(list);
+			head(list) = value;
+
+			break;
+	}
 }
 
 void list_reverse(Atom* list)
