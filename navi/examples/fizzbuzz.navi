@@ -2,7 +2,7 @@
 (load "navi/math.navi" "divisible remainder")
 
 (set (fizzbuzz x)
-	(for (set i 1) (<= i x) (++ i)
+	(for (set i 1) (<= i x) (++ i) do
 		(let ((fizz (divisible i 3)) (buzz (divisible i 5)))
 			(if (and fizz buzz) 
 				(sayline "fizzbuzz")

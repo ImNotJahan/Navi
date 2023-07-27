@@ -105,7 +105,7 @@
 (expand (do . body)
 	;((lambda () ,@body)))
 
-(expand (when p . body)
+(expand (when p sugar . body)
 	;(if ,p (do ,@body) null))
 	
 (set (newline) (say #\n))
@@ -128,7 +128,7 @@
 			null 
 			(helper (type_of type)))
 			
-		(when (not= (type_of variable) type)
+		(when (not= (type_of variable) type) do
 			(helper type))))
 			
 			
@@ -144,39 +144,51 @@
 (set (=bignum a b) (=list a b))
 (set (=string a b) (=list a b))
 
-(set (assert a) 
+(set (assert_that a) 
 	(if a
 		true
 		(error "SYNTAX" "Test failed")))
 		
 (set (type? value type) (u= (type_of value) type))
 
-(expand (repeat times . body)
-	;(when (> ,times 0)
+(expand (repeat times sugar . body)
+	;(when (> ,times 0) do
 		(do ,@body)
-		(repeat (- ,times 1) ,@body)))
+		(repeat (- ,times 1) times ,@body)))
 
-(expand (while predicate . body)
-	;(when ,predicate
+(expand (while predicate sugar . body)
+	;(when ,predicate do
 		(do ,@body)
-		(while ,predicate ,@body)))
+		(while ,predicate do ,@body)))
+		
+(expand (until predicate sugar . body)
+	;(while (not ,predicate) do ,@body))
+	
+(expand (unless predicate sugar . body)
+	;(when (not ,predicate) do ,@body))
+	
+(expand (pop list)
+	;(change ,list (tail ,list)))
 
-(expand (for init predicate each . body)
+(expand (push item sugar list)
+	;(change ,list (pair ,item ,list)))
+
+(expand (for init predicate each sugar . body)
 	(if (u= predicate 'IN)
-		;(for_each ,init ,each ,@body)
+		;(for_each ,init ,each do ,@body)
 		;(do
 			,init
-			(while ,predicate
+			(while ,predicate do
 				,@body
 				,each))))
 
-(expand (for_each item items . body)
+(expand (for_each item sugar items sugar . body)
 	;(do
 		(set items ,items)
-		(while (non_null? items)
+		(while (non_null? items) do
 			(set ,item (head items))
 			,@body
-			(change items (tail items)))))
+			(pop items))))
 
 (set (sayline a) (say a) (newline))
 
@@ -185,8 +197,8 @@
 (set (range start end)
 	(let ((result null))
 		(if (< start end)
-			(for (set i start) (<= i end) (++ i)
-				(change result (pair i result)))
-			(for (set i start) (>= i end) (-- i)
-				(change result (pair i result))))
+			(for (set i start) (<= i end) (++ i) do
+				(push i to result))
+			(for (set i start) (>= i end) (-- i) do
+				(push i to result)))
 		(reverse result)))

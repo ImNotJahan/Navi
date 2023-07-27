@@ -5,9 +5,8 @@ Demonstrates (listen) & (reflect)
 
 (set (repl) 
 	(let ((input (listen)))
-		(when (not= input null) ~ remember that empty strings are equal to null
-			(say (reflect input))
-			(newline)
+		(when (not= input null) do ~ remember that empty strings are equal to null
+			(sayline (reflect input))
 			(repl))))
 
 (repl)

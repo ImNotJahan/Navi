@@ -3,35 +3,35 @@
 
 (set (rpn expr)
 	(let ((stack null) (temp 0) (di 0) (reading_digit false))
-		(while (non_null? expr)
+		(while (non_null? expr) do
 			(let ((char (head expr)))
 				(if (= char #+)
 					(do
 						(change temp (+ (hail stack) (head stack)))
-						(change stack (tail (tail stack)))
-						(change stack (pair temp stack))
+						(pop stack) (pop stack)
+						(push temp to stack)
 						(change temp 0))
 				(if (= char #-)
 					(do
 						(change temp (- (hail stack) (head stack)))
-						(change stack (tail (tail stack)))
-						(change stack (pair temp stack))
+						(pop stack) (pop stack)
+						(push temp to stack)
 						(change temp 0))
 				(if (= char #*)
 					(do
 						(change temp (* (hail stack) (head stack)))
-						(change stack (tail (tail stack)))
-						(change stack (pair temp stack))
+						(pop stack) (pop stack)
+						(push temp to stack)
 						(change temp 0))
 				(if (= char #/)
 					(do
 						(change temp (// (hail stack) (head stack)))
-						(change stack (tail (tail stack)))
-						(change stack (pair temp stack))
+						(pop stack) (pop stack)
+						(push temp to stack)
 						(change temp 0))
 				(if (= char #\s)
-					(when reading_digit
-						(change stack (pair temp stack))
+					(when reading_digit do
+						(push temp to stack)
 						(change temp 0)
 						(change di 0)
 						(change reading_digit false))
@@ -40,5 +40,5 @@
 						(+= temp (ctoi char))
 						(++ di)
 						(change reading_digit true))))))))
-			(change expr (tail expr)))
+			(pop expr))
 		(head stack)))

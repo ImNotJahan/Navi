@@ -1,6 +1,6 @@
 # Navi
 
-A LISP-based interpreter written in C++
+Navi is a lisp-inspired programming language designed for being fast to code in whilst also being readable. 
 
 ## Documentation
 
