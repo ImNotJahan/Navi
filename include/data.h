@@ -1,5 +1,16 @@
 #pragma once
 
+struct Frame
+{
+	Frame* parent;
+	Atom environment = null;
+	Atom evaluated_operation = null;
+	Atom pending_arguments = null;
+	Atom evaluated_arguments = null;
+	Atom body = null;
+	bool start = false;
+};
+
 // Makes pair from head and tail
 Atom construct(Atom head, Atom tail);
 // Shorthand for construct
@@ -46,7 +57,7 @@ bool list_of_type_p(Atom list, Atom type);
 std::string to_string(Atom str);
 
 // Function call info to be pushed to stack
-Atom make_frame(Atom parent, Atom environment, Atom pending);
+Frame make_frame(Frame parent, Atom environment, Atom pending);
 
 // Table containing all symbols for keeping symbols unique
 static Atom symbol_table = null;
@@ -55,3 +66,6 @@ static Atom symbol_table = null;
 int bignum_length(Atom bignum);
 // Creates a bignum from an integer
 Atom int_to_bignum(int integer);
+
+void mark_frame(Frame root);
+Frame copy_frame(Frame frame);

@@ -6,7 +6,9 @@
 
 Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 {
-	Atom stack = null;
+	Frame stack;
+	stack.start = true;
+
 	Error err = NOERR;
 
 	do
@@ -15,7 +17,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 		{
 			mark(environment);
 			mark(expr);
-			mark(stack);
+			mark_frame(stack);
 			
 			collect();
 		}
@@ -71,8 +73,9 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 						else return ARGNUM("SET");
 						
 						stack = make_frame(stack, environment, null);
-						list_set(stack, 2, operation);
-						list_set(stack, 4, symbol);
+
+						stack.evaluated_operation = operation;
+						stack.evaluated_arguments = symbol;
 
 						continue;
 					}
@@ -87,8 +90,8 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					if (symbol.type != Atom::SYMBOL) return Error{ Error::TYPE, "Expected symbol", "CHANGE" };
 
 					stack = make_frame(stack, environment, null);
-					list_set(stack, 2, operation);
-					list_set(stack, 4, symbol);
+					stack.evaluated_operation = operation;
+					stack.evaluated_arguments = symbol;
 
 					expr = head(tail(args));
 
@@ -106,7 +109,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					if (arg_length != 3 && arg_length != 5) return ARGNUM("IF");
 
 					stack = make_frame(stack, environment, tail(args));
-					list_set(stack, 2, operation);
+					stack.evaluated_operation = operation;
 
 					expr = head(args);
 					continue;
@@ -138,7 +141,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					if (list_length(args) != 2) return ARGNUM("APPLY");
 
 					stack = make_frame(stack, environment, tail(args));
-					list_set(stack, 2, operation);
+					stack.evaluated_operation = operation;
 
 					expr = head(args);
 					continue;
@@ -186,7 +189,6 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 
 					if (!err.type)
 					{
-						//stack = make_frame(stack, environment, args);
 						expr = op;
 						continue;
 					}
@@ -203,18 +205,18 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				// handle functions
 				stack = make_frame(stack, environment, args);
 				expr = operation;
-
+				
 				continue;
 			}
 		}
-
-		if (nullp(stack)) break;
+		
+		if (stack.start) break;
 		if (!err.type) err = evaluate_do_returning(&stack, &expr, &environment, result);
 	} while (!err.type);
 	
 	mark(environment); 
 	mark(expr); 
-	mark(stack); 
+	mark_frame(stack); 
 	mark(*result); 
 	collect();
 
@@ -231,7 +233,7 @@ Error apply(Atom func, Atom args, Atom* result)
 	environment = env_create(head(func));
 	arg_names = head(tail(func));
 	body = tail(tail(func));
-
+	
 	// Bind arguments to symbols in closure
 	while (!nullp(arg_names))
 	{
@@ -266,39 +268,39 @@ Error apply(Atom func, Atom args, Atom* result)
 	return NOERR;
 }
 
-Error evaluate_do_execution(Atom* stack, Atom* expr, Atom* environment)
+Error evaluate_do_execution(Frame* stack, Atom* expr, Atom* environment)
 {
 	Atom body;
 	
-	*environment = list_get(*stack, 1);
-	body = list_get(*stack, 5);
+	*environment = stack->environment;
+	body = stack->body;
 	
 	*expr = head(body);
 	body = tail(body);
 	
-	if (nullp(body)) *stack = head((*stack)); // pop stack as nothing left to execute
-	else list_set(*stack, 5, body);
+	if (nullp(body)) *stack = *stack->parent; // pop stack as nothing left to execute
+	else stack->body = body;
 
 	return NOERR;
 }
 
-Error evaluate_do_binding(Atom* stack, Atom* expr, Atom* environment)
+Error evaluate_do_binding(Frame* stack, Atom* expr, Atom* environment)
 {
 	Atom operation, args, arg_names, body;
 	
-	body = list_get(*stack, 5);
+	body = stack->body;
 	if (!nullp(body)) return evaluate_do_execution(stack, expr, environment);
 	
-	operation = list_get(*stack, 2);
-	args = list_get(*stack, 4);
+	operation = stack->evaluated_operation;
+	args = stack->evaluated_arguments;
 	
 	*environment = env_create(head(operation));
 	arg_names = head(tail(operation));
 	body = tail(tail(operation));
 
 	// Update stack frame
-	list_set(*stack, 1, *environment);
-	list_set(*stack, 5, body);
+	stack->environment = *environment;
+	stack->body = body;
 
 	// Bind arguments
 	while (!nullp(arg_names))
@@ -319,22 +321,22 @@ Error evaluate_do_binding(Atom* stack, Atom* expr, Atom* environment)
 
 	if (!nullp(args)) return ARGNUM("EVALUATE_DO_BINDING");
 	
-	list_set(*stack, 4, null); // finished binding args so clear from frame
+	stack->evaluated_arguments = null; // finished binding args so clear from frame
 	
 	return evaluate_do_execution(stack, expr, environment);
 }
 
-Error evaluate_do_applying(Atom* stack, Atom* expr, Atom* environment, Atom* result)
+Error evaluate_do_applying(Frame* stack, Atom* expr, Atom* environment, Atom* result)
 {
 	Atom operation, args;
-
-	operation = list_get(*stack, 2);
-	args = list_get(*stack, 4);
 	
-	if (!nullp(args))
+	operation = stack->evaluated_operation;
+	args = stack->evaluated_arguments;
+	
+	if (!nullp(args) && listp(args))
 	{
 		list_reverse(&args);
-		list_set(*stack, 4, args);
+		stack->evaluated_arguments = args;
 	}
 	
 	if (operation.type == Atom::SYMBOL)
@@ -342,7 +344,7 @@ Error evaluate_do_applying(Atom* stack, Atom* expr, Atom* environment, Atom* res
 		if (*operation.value.symbol == "APPLY")
 		{
 			// Replace current frame
-			*stack = head((*stack));
+			*stack = *stack->parent;
 			*stack = make_frame(*stack, *environment, null);
 
 			operation = head(args);
@@ -351,14 +353,15 @@ Error evaluate_do_applying(Atom* stack, Atom* expr, Atom* environment, Atom* res
 			if (!listp(args)) 
 				return Error{ Error::SYNTAX, "Args not provided as list", "EVALUATE_DO_APPLYING"};
 
-			list_set(*stack, 2, operation);
-			list_set(*stack, 4, args);
+			stack->evaluated_operation = operation;
+			stack->evaluated_arguments = args;
 		}
 	}
 
 	if (operation.type == Atom::FUNCTION)
 	{
-		*stack = head((*stack));
+		*stack = *stack->parent;
+		
 		*expr = cons(operation, args);
 
 		return NOERR;
@@ -369,13 +372,13 @@ Error evaluate_do_applying(Atom* stack, Atom* expr, Atom* environment, Atom* res
 	return evaluate_do_binding(stack, expr, environment);
 }
 
-Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* result)
+Error evaluate_do_returning(Frame* stack, Atom* expr, Atom* environment, Atom* result)
 {
 	Atom operation, args, body;
-
-	*environment = list_get(*stack, 1);
-	operation = list_get(*stack, 2);
-	body = list_get(*stack, 5);
+	
+	*environment = stack->environment;
+	operation = stack->evaluated_operation;
+	body = stack->body;
 	
 	if (!nullp(body)) // Still body to evaluate
 		return evaluate_do_applying(stack, expr, environment, result);
@@ -383,17 +386,18 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 	if (nullp(operation)) // Finished evaluating operator
 	{
 		operation = *result;
-		list_set(*stack, 2, operation);
+		stack->evaluated_operation = operation;
 		
 		if (operation.type == Atom::EXPAND)
 		{
 			// Don't evaluate macro arguments
-			args = list_get(*stack, 3);
+			args = stack->pending_arguments;
 			*stack = make_frame(*stack, *environment, null);
 
 			operation.type = Atom::CLOSURE;
-			list_set(*stack, 2, operation);
-			list_set(*stack, 4, args);
+
+			stack->evaluated_operation = operation;
+			stack->evaluated_arguments = args;
 
 			return evaluate_do_binding(stack, expr, environment);
 		}
@@ -402,27 +406,27 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 	{
 		if (*operation.value.symbol == "SET")
 		{
-			Atom symbol = list_get(*stack, 4);
+			Atom symbol = stack->evaluated_arguments;
 
 			env_set(*environment, symbol, *result);
-			*stack = head((*stack));
+			*stack = *stack->parent;
 			*expr = cons(sym("QUOTE"), cons(symbol, null));
 
 			return NOERR;
 		}
 		else if (*operation.value.symbol == "CHANGE")
 		{
-			Atom symbol = list_get(*stack, 4);
+			Atom symbol = stack->evaluated_arguments;
 
 			Error err = env_change(*environment, symbol, *result);
-			*stack = head((*stack));
+			*stack = *stack->parent;
 			*expr = cons(sym("QUOTE"), cons(symbol, null));
 
 			return err;
 		}
 		else if (*operation.value.symbol == "IF")
 		{
-			args = list_get(*stack, 3);
+			args = stack->pending_arguments;
 			int arg_length = list_length(args);
 
 			if ((*result).type != Atom::BOOLEAN) return Error{ Error::TYPE, "Expected bool", "IF" };
@@ -445,7 +449,7 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 			}
 
 			*expr = (*result).value.boolean ? if_do : else_do;
-			*stack = head((*stack));
+			*stack = *stack->parent;
 
 			return NOERR;
 		}
@@ -454,28 +458,29 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 	else if (operation.type == Atom::EXPAND)
 	{
 		*expr = *result;
-		*stack = head((*stack));
+		*stack = *stack->parent;
 
 		return NOERR;
 	}
 	else
 	{
 	store_arg: // store evaluated arguments
-		args = list_get(*stack, 4);
-		list_set(*stack, 4, cons(*result, args));
+		args = stack->evaluated_arguments;
+
+		stack->evaluated_arguments = cons(*result, args);
 	}
 	
-	args = list_get(*stack, 3);
+	args = stack->pending_arguments;
 
 	if (nullp(args))
 	{
 		// no more arguments to evaluate
 		return evaluate_do_applying(stack, expr, environment, result);
 	}
-
+	
 	// evaluate next argument
 	*expr = head(args);
-	list_set(*stack, 3, tail(args));
+	stack->pending_arguments = tail(args);
 
 	return NOERR;
 }

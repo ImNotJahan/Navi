@@ -3,11 +3,14 @@
 #include "../include/garbage_collection.h"
 #include "../include/strings.h"
 #include "../include/numbers.h"
+#include <iostream>
 
 Allocation* global_allocations = NULL;
 
+static const size_t MIN_COLLECTION = 1024 * 1024;
+
 static size_t bytesAllocated = 0;
-static size_t nextCollection = 1024 * 1024;
+static size_t nextCollection = MIN_COLLECTION;
 
 // Implementing here so global_allocations only has to be referenced in data.cpp
 void collect()
@@ -35,7 +38,37 @@ void collect()
 		}
 	}
 	
-	nextCollection = bytesAllocated * 1.15;
+	nextCollection = std::max((size_t) (bytesAllocated * 1.15), MIN_COLLECTION);
+}
+
+Frame copy_frame(Frame frame)
+{
+	Frame new_frame;
+
+	new_frame.body = frame.body;
+	new_frame.environment = frame.environment;
+	new_frame.evaluated_arguments = frame.evaluated_arguments;
+	new_frame.evaluated_operation = frame.evaluated_operation;
+	new_frame.pending_arguments = frame.pending_arguments;
+	new_frame.parent = frame.parent;
+	new_frame.start = frame.start;
+
+	return new_frame;
+}
+
+void mark_frame(Frame root)
+{
+	Frame search = root;
+	while (!search.start)
+	{
+		mark(search.body);
+		mark(search.environment);
+		mark(search.evaluated_arguments);
+		mark(search.evaluated_operation);
+		mark(search.pending_arguments);
+		
+		search = *search.parent;
+	}
 }
 
 size_t getBytesAllocated()
@@ -379,14 +412,10 @@ std::string to_string(Atom str)
 	return temp;
 }
 
-Atom make_frame(Atom parent, Atom environment, Atom pending)
+Frame make_frame(Frame parent, Atom environment, Atom pending)
 {
-	// (parent environment evaluated_operation (pending_arguments...) (evaluated_arguments...) (body...))
-	return cons(parent, 
-		cons(environment, 
-		cons(null, // operation
-		cons(pending, 
-		cons(null, // arguments
-		cons(null, // body
-			null))))));
+	Frame new_frame = copy_frame(parent);
+	Frame frame = Frame{ &new_frame, environment, null, pending, null, null };
+
+	return frame;
 }
