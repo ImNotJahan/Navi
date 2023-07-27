@@ -62,13 +62,17 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					}
 					else if (symbol.type == Atom::SYMBOL)
 					{
-						if (list_length(args) != 2) return ARGNUM("SET");
+						int arg_length = list_length(args);
+
+						// (set x 10)
+						if (arg_length == 2) expr = head(tail(args));
+						// (set x to 10)
+						else if (arg_length == 3) expr = head(tail(tail(args)));
+						else return ARGNUM("SET");
 						
 						stack = make_frame(stack, environment, null);
 						list_set(stack, 2, operation);
 						list_set(stack, 4, symbol);
-
-						expr = head(tail(args));
 
 						continue;
 					}
@@ -98,7 +102,8 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				}
 				else if (*operation.value.symbol == "IF")
 				{
-					if (list_length(args) != 3) return ARGNUM("IF");
+					int arg_length = list_length(args);
+					if (arg_length != 3 && arg_length != 5) return ARGNUM("IF");
 
 					stack = make_frame(stack, environment, tail(args));
 					list_set(stack, 2, operation);
@@ -418,10 +423,28 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 		else if (*operation.value.symbol == "IF")
 		{
 			args = list_get(*stack, 3);
+			int arg_length = list_length(args);
 
 			if ((*result).type != Atom::BOOLEAN) return Error{ Error::TYPE, "Expected bool", "IF" };
 
-			*expr = (*result).value.boolean ? head(args) : head(tail(args));
+			Atom if_do, else_do;
+
+			if (arg_length == 4)
+			{
+				if_do = head(tail(args));
+				else_do = head(tail(tail(tail(args))));
+			}
+			else if (arg_length == 2)
+			{
+				if_do = head(args);
+				else_do = head(tail(args));
+			}
+			else
+			{
+				return Error{ Error::ARGS, "Somehow have incorrect number of args (should not reach here)", "EVALUATE_DO_RETURNING IF" };
+			}
+
+			*expr = (*result).value.boolean ? if_do : else_do;
 			*stack = head((*stack));
 
 			return NOERR;
