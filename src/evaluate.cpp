@@ -80,7 +80,13 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 				}
 				else if (*operation.value.symbol == "CHANGE")
 				{
-					if (list_length(args) != 2) return ARGNUM("CHANGE");
+					int arg_length = list_length(args);
+
+					// (set x 10)
+					if (arg_length == 2) expr = head(tail(args));
+					// (set x to 10)
+					else if (arg_length == 3) expr = head(tail(tail(args)));
+					else return ARGNUM("CHANGE");
 
 					Atom symbol = head(args);
 
@@ -89,8 +95,6 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 					stack = make_frame(stack, environment, null);
 					list_set(stack, 2, operation);
 					list_set(stack, 4, symbol);
-
-					expr = head(tail(args));
 
 					continue;
 				}
