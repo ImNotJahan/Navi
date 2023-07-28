@@ -129,8 +129,6 @@ void set_default_environment(Atom* env)
 	env_set(*env, sym("TYPE_OF"), make_function(function_type, 1));
 	env_set(*env, sym("="), make_function(function_eq, 2));
 	env_set(*env, sym("<"), make_function(function_less, 2));
-	env_set(*env, sym("AND"), make_function(function_and, 2));
-	env_set(*env, sym("OR"), make_function(function_or, 2));
 	env_set(*env, sym("APPLY"), make_function(function_apply));
 	env_set(*env, sym("SAY"), make_function(function_say, 1));
 	env_set(*env, sym("INT"), make_function(function_int, 1));

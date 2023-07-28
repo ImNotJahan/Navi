@@ -202,3 +202,11 @@
 			(for (set i start) (>= i end) (-- i) do
 				(push i to result)))
 		(reverse result)))
+		
+(set (and p1 p2)
+	(if p1 then_return
+		p2 otherwise_return
+		false))
+
+(set (or p1 p2)
+	(if p1 then_return true otherwise_return p2))

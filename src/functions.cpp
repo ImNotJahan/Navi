@@ -158,36 +158,6 @@ Error function_less(Atom args, Atom* result)
 	return NOERR;
 }
 
-Error function_and(Atom args, Atom* result)
-{
-	check_args(args, 2, "AND");
-
-	Atom a, b;
-	a = head(args);
-	b = head(tail(args));
-
-	if (!both_type(a, b, BOOLEAN)) return Error{ Error::TYPE, "Booleans expected", "AND"};
-
-	*result = (a.value.boolean && b.value.boolean) tf;
-
-	return NOERR;
-}
-
-Error function_or(Atom args, Atom* result)
-{
-	check_args(args, 2, "OR");
-
-	Atom a, b;
-	a = head(args);
-	b = head(tail(args));
-
-	if (!both_type(a, b, BOOLEAN)) return Error{ Error::TYPE, "Booleans expected", "OR"};
-
-	*result = (a.value.boolean || b.value.boolean) tf;
-
-	return NOERR;
-}
-
 Error function_apply(Atom args, Atom* result)
 {
 	Atom fn;
