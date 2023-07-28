@@ -129,12 +129,12 @@ Error function_eq(Atom args, Atom* result)
 		return NOERR;
 	}
 	else if (a.type != b.type) 
-		return Error{ Error::TYPE, "Arguments must be same type (or numbers)", "EQL"};
+		return Error{ Error::TYPE, "Arguments must be same type (or numbers)", "="};
 
 	if (both_type(a, b, SYMBOL)) *result = type_eq(a, b, symbol);
 	else if (both_type(a, b, CHARACTER)) *result = type_eq(a, b, character);
 	else if (both_type(a, b, BOOLEAN)) *result = type_eq(a, b, boolean);
-	else return Error{ Error::TYPE, "Cannot compare type", "EQL"};
+	else return Error{ Error::TYPE, "Cannot compare type", "="};
 
 	return NOERR;
 }
@@ -241,6 +241,7 @@ Error function_int(Atom args, Atom* result)
 	if (value.type == value.FLOAT) integer.value.integer = value.value.float_;
 	else if (value.type == value.INTEGER) integer.value.integer = value.value.integer;
 	else if (value.type == value.RATIO) integer.value.integer = value.value.ratio.numerator / value.value.ratio.denominator;
+	else if (value.type == value.BIGNUM) integer.value.integer = head(value).value.integer;
 	else return Error{ Error::TYPE, "Expected number", "INT"};
 
 	*result = integer;
@@ -274,55 +275,77 @@ Error function_string(Atom args, Atom* result)
 	Atom string{ Atom::STRING };
 	Error err = NOERR;
 
-	if (value.type == Atom::PAIR)
-	{
-		if (!listp(value)) return Error{ Error::SYNTAX, "Improper list", "STRING" };
-		if (!list_of_type_p(value, Atom{ Atom::CHARACTER })) return Error{ Error::SYNTAX, "List must only contain characters", "STRING" };
+	std::string str = "";
 
-		string.value.pair = value.value.pair;
-		*result = string;
-	}
-	else if (value.type == Atom::SYMBOL)
+	switch(value.type)
 	{
-		err = make_string(*value.value.symbol, result);
-	}
-	else if (value.type == Atom::STRING)
-	{
-		*result = value;
-	}
-	else if (value.type == Atom::INTEGER)
-	{
-		err = make_string(std::to_string(value.value.integer), result);
-	}
-	else if (value.type == Atom::FLOAT)
-	{
-		err = make_string(std::to_string(value.value.float_), result);
-	}
-	else if (value.type == Atom::NULL_)
-	{
-		err = make_string("null", result);
-	}
-	else if (value.type == Atom::RATIO)
-	{
-		std::string str = 
-			std::to_string(value.value.ratio.numerator) 
-			+ ":" + 
-			std::to_string(value.value.ratio.denominator);
+		case Atom::PAIR:
+			if (!listp(value)) return Error{ Error::SYNTAX, "Improper list", "STRING" };
+			if (!list_of_type_p(value, Atom{ Atom::CHARACTER })) return Error{ Error::SYNTAX, "List must only contain characters", "STRING" };
+
+			string.value.pair = value.value.pair;
+			*result = string;
+			break;
+
+		case Atom::SYMBOL:
+			err = make_string(*value.value.symbol, result);
+			break;
+
+		case Atom::STRING:
+			*result = value;
+			break;
+
+		case Atom::INTEGER:
+			err = make_string(std::to_string(value.value.integer), result);
+			break;
+
+		case Atom::FLOAT:
+			err = make_string(std::to_string(value.value.float_), result);
+			break;
+
+		case Atom::NULL_:
+			err = make_string("null", result);
+			break;
+
+		case Atom::RATIO:
+			str = 
+				std::to_string(value.value.ratio.numerator) 
+				+ ":" + 
+				std::to_string(value.value.ratio.denominator);
 		
-		err = make_string(str, result);
-	}
-	else if (value.type == Atom::CHARACTER)
-	{
-		err = make_string(std::string(1, value.value.character), result);
-	}
-	else if (value.type == Atom::BOOLEAN)
-	{
-		if(value.value.boolean) err = make_string("true", result);
-		else err = make_string("false", result);
-	}
-	else
-	{
-		return Error{ Error::TYPE, "Type cannot be turned into string", "STRING" };
+			err = make_string(str, result);
+			break;
+	
+		case Atom::CHARACTER:
+			err = make_string(std::string(1, value.value.character), result);
+			break;
+
+		case Atom::BOOLEAN:
+			if(value.value.boolean) err = make_string("true", result);
+			else err = make_string("false", result);
+			break;
+
+		case Atom::BIGNUM:
+			
+
+			str += std::to_string(head(value).value.integer);
+			value = tail(value);
+
+			while (!nullp(value))
+			{
+				int nums = head(value).value.integer;
+
+				for (int i = int_length(nums) + 1; i < 10; i++) str += "0";
+
+				str += std::to_string(nums);
+				value = tail(value);
+			}
+
+			err = make_string(str, result);
+			break;
+
+		default:
+			return Error{ Error::TYPE, "Type cannot be turned into string", "STRING" };
 	}
 
 	return err;
