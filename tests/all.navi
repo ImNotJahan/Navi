@@ -1,0 +1,4 @@
+(load "tests/builtin.navi")
+(load "tests/math.navi")
+(load "tests/ratios.navi")
+(load "tests/strings.navi")
