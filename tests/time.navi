@@ -1,0 +1,13 @@
+(load "navi/time.navi")
+
+(assert_that (type? (time 0) 'bignum))
+(assert_that (type? (unix_time) 'bignum))
+(assert_that (=bignum (unix_time) (time 0)))
+(assert_that (let ((s (current_second))) (and (< s 60) (>= s 0))))
+(assert_that (let ((m (current_minute 0))) (and (< m 60) (>= m 0))))
+(assert_that (let ((h (current_hour 0))) (and (< h 24) (>= h 0))))
+(assert_that (type? (post_midday 0) 'bool))
+(assert_that (let ((t (military_time 0))) (and (type? t 'string) (or (= (length t) 5) (= (length t) 4)))))
+(assert_that (let ((t (clock_time 0))) (and (type? t 'string) (or (= (length t) 8) (= (length t) 7)))))
+
+(sayline "passed!")

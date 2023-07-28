@@ -5,5 +5,7 @@
 (assert_that (=string (+ctos "hello" #!) "hello!"))
 (assert_that (=string (+string "hello " "world!") "hello world!"))
 (assert_that (=string (substr "i once had a dream where my dog ate another dog that was transformed into a fish" 76) "fish"))
+(assert_that (string_in "a" (list "a" "b" "c")))
+(assert_that (not (string_in "a" (list "b" "c" "d"))))
 
 (sayline "passed!")

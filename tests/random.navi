@@ -1,0 +1,11 @@
+(load "navi/random.navi")
+(load "navi/strings.navi" "string_in")
+
+(assert_that (type? (random_range 1 10) 'integer))
+(assert_that (type? (random_float) 'float))
+(assert_that (string_in (pick_random (list "a" "b" "c")) (list "a" "b" "c")))
+(assert_that (type? (random_letter) 'character))
+(assert_that (type? (random_uppercase_letter) 'character))
+(assert_that (type? (random_lowercase_letter) 'character))
+
+(sayline "passed!")

@@ -2,3 +2,5 @@
 (load "tests/math.navi")
 (load "tests/ratios.navi")
 (load "tests/strings.navi")
+(load "tests/random.navi")
+(load "tests/time.navi")
