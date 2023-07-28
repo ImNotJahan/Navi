@@ -138,6 +138,7 @@
     <ClCompile Include="src\garbage_collection.cpp" />
     <ClCompile Include="src\library.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\modules\random.cpp" />
     <ClCompile Include="src\numbers.cpp" />
     <ClCompile Include="src\parser.cpp" />
     <ClCompile Include="src\print.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="include\garbage_collection.h" />
     <ClInclude Include="include\library.h" />
     <ClInclude Include="include\main.h" />
+    <ClInclude Include="include\modules\random.h" />
     <ClInclude Include="include\numbers.h" />
     <ClInclude Include="include\parser.h" />
     <ClInclude Include="include\strings.h" />

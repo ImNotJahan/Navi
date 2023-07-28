@@ -1,0 +1,22 @@
+(load "random_builtin")
+
+(set (random_range min max)
+	(+ (remainder (random) max) min))
+	
+(set (random_float)
+	(float (/ 1 (+ (random) 1))))
+	
+(set (pick_random list . list_length)
+	(if (non_null? list_length)
+		(get list (random_range 0 (- (head list_length) 1)))
+		(get list (random_range 0 (- (length list) 1)))))
+	
+(set (random_letter)
+	(pick_random '(#a #b #c #d #e #f #g #h #i #j #k #l #m #n #o #p #q #r #s #t #u #v #w #x #y #z 
+	#A #B #C #D #E #F #G #H #I #J #K #L #M #N #O #P #Q #R #S #T #U #V #W #X #Y #Z) 52))
+	
+(set (random_uppercase_letter)
+	(pick_random '(#A #B #C #D #E #F #G #H #I #J #K #L #M #N #O #P #Q #R #S #T #U #V #W #X #Y #Z) 26))
+	
+(set (random_lowercase_letter)
+	(pick_random '(#a #b #c #d #e #f #g #h #i #j #k #l #m #n #o #p #q #r #s #t #u #v #w #x #y #z) 26))
