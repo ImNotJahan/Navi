@@ -43,6 +43,8 @@ void list_set(Atom list, int index, Atom value);
 void list_reverse(Atom* list);
 // Returns if every element in list is of type
 bool list_of_type_p(Atom list, Atom type);
+// Returns if l1 and l2 have equal value
+bool compare_lists(Atom l1, Atom l2);
 
 // Converts atom string to std::string (as atom strings are really character lists)
 std::string to_string(Atom str);

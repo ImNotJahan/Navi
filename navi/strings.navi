@@ -36,6 +36,6 @@
 (set (string_in x list)
 	(if (null? list)
 		false
-		(if (=string (head list) x)
+		(if (= (head list) x)
 			true
 			(string_in x (tail list)))))

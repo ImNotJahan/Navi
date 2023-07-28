@@ -131,9 +131,11 @@
   <ItemGroup>
     <ClCompile Include="src\bignum_math.cpp" />
     <ClCompile Include="src\data.cpp" />
+    <ClCompile Include="src\data_lists.cpp" />
     <ClCompile Include="src\environment.cpp" />
     <ClCompile Include="src\evaluate.cpp" />
     <ClCompile Include="src\functions.cpp" />
+    <ClCompile Include="src\functions_comparsions.cpp" />
     <ClCompile Include="src\functions_math.cpp" />
     <ClCompile Include="src\garbage_collection.cpp" />
     <ClCompile Include="src\library.cpp" />

@@ -2,7 +2,7 @@
 
 (assert_that (type? (time 0) 'bignum))
 (assert_that (type? (unix_time) 'bignum))
-(assert_that (=bignum (unix_time) (time 0)))
+(assert_that (= (unix_time) (time 0)))
 (assert_that (let ((s (current_second))) (and (< s 60) (>= s 0))))
 (assert_that (let ((m (current_minute 0))) (and (< m 60) (>= m 0))))
 (assert_that (let ((h (current_hour 0))) (and (< h 24) (>= h 0))))

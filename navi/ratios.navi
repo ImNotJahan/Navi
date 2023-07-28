@@ -28,7 +28,8 @@
 		
 (set (itor i)
 	(ratio i 1))
-	
+
+~ builtin = can compare ratios, but it won't simplify them beforehand
 (set (=ratio a b)
 	(let ((a (simplify_ratio a)) (b (simplify_ratio b)))
 		(and (= (denominator a) (denominator b)) (= (numerator a) (numerator b)))))

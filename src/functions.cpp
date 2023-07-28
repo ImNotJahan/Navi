@@ -1,7 +1,6 @@
 #include "../include/main.h"
 #include "../include/functions.h"
 #include "../include/numbers.h"
-#include "../include/bignum_math.h"
 
 #include <iostream>
 
@@ -98,76 +97,6 @@ Error function_type(Atom args, Atom* result)
 
 		default:
 			return Error{ Error::TYPE, "Unknown type", "TYPE"};
-	}
-
-	return NOERR;
-}
-
-Error function_eq(Atom args, Atom* result)
-{
-	check_args(args, 2, "=");
-
-	Atom a, b;
-
-	a = head(args);
-	b = head(tail(args));
-
-	// Floats and ints should be comparable
-	if (is_number(a) && is_number(b))
-	{
-		if (both_type(a, b, INTEGER)) *result = type_eq(a, b, integer);
-		else if (both_type(a, b, FLOAT)) *result = type_eq(a, b, float_);
-		else if (a.type == Atom::INTEGER) *result = a.value.integer == b.value.float_ tf;
-		else *result = a.value.float_ == b.value.integer ? true_ : false_;
-
-		return NOERR;
-	}
-	// Allows comparing type with null
-	else if (a.type == Atom::NULL_ || b.type == Atom::NULL_)
-	{
-		*result = a.type == b.type tf;
-
-		return NOERR;
-	}
-	else if (a.type != b.type) 
-		return Error{ Error::TYPE, "Arguments must be same type (or numbers)", "="};
-
-	if (both_type(a, b, SYMBOL)) *result = type_eq(a, b, symbol);
-	else if (both_type(a, b, CHARACTER)) *result = type_eq(a, b, character);
-	else if (both_type(a, b, BOOLEAN)) *result = type_eq(a, b, boolean);
-	else return Error{ Error::TYPE, "Cannot compare type", "="};
-
-	return NOERR;
-}
-
-Error function_less(Atom args, Atom* result)
-{
-	check_args(args, 2, "<");
-
-	Atom a, b;
-	a = head(args);
-	b = head(tail(args));
-
-	if (!(is_number(a) && is_number(b))) 
-		return Error{ Error::TYPE, "Number expected", "LESS"};
-
-	if (both_type(a, b, INTEGER)) *result = a.value.integer < b.value.integer tf;
-	else if (both_type(a, b, FLOAT)) *result = a.value.float_ < b.value.float_ tf;
-	else if (a.type == Atom::INTEGER && b.type == Atom::FLOAT) *result = a.value.integer < b.value.float_ tf;
-	else if (a.type == Atom::FLOAT && b.type == Atom::INTEGER) *result = a.value.float_ < b.value.integer tf;
-	else // for bignums
-	{
-		if (both_type(a, b, BIGNUM)) *result = bignum_less(a, b) tf;
-		else if (a.type == Atom::BIGNUM)
-		{
-			if(b.type == Atom::INTEGER) *result = bignum_less(a, int_to_bignum(b.value.integer)) tf;
-			else *result = bignum_less(a, int_to_bignum(b.value.float_)) tf;
-		}
-		else if (b.type == Atom::BIGNUM)
-		{
-			if (a.type == Atom::INTEGER)* result = bignum_less(int_to_bignum(a.value.integer), b) tf;
-			else *result = bignum_less(int_to_bignum(a.value.float_), b) tf;
-		}
 	}
 
 	return NOERR;
