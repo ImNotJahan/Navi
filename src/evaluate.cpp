@@ -190,7 +190,6 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 
 					if (!err.type)
 					{
-						//stack = make_frame(stack, environment, args);
 						expr = op;
 						continue;
 					}
@@ -199,7 +198,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 			}
 			else if (operation.type == Atom::FUNCTION)
 			{
-				err = (*operation.value.func)(args, result);
+				err = (*(*operation.value.func).func)(args, result);
 			}
 			else
 			{
@@ -227,7 +226,7 @@ Error evaluate_expr(Atom expr, Atom environment, Atom* result)
 
 Error apply(Atom func, Atom args, Atom* result)
 {
-	if (func.type == Atom::FUNCTION) return (*func.value.func)(args, result);
+	if (func.type == Atom::FUNCTION) return (*(*func.value.func).func)(args, result);
 	else if (func.type != Atom::CLOSURE)
 		return Error{ Error::TYPE, "Expected function", "APPLY"};
 

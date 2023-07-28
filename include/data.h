@@ -15,8 +15,10 @@ Atom make_character(char character);
 Error make_character(std::string character, Atom* result);
 // Creates float from float
 Atom make_float(float str);
-// Creates function from function
+// Creates function with variable number of arguments from function
 Atom make_function(function func);
+// Creates function with fixed number of arguments from function
+Atom make_function(function func, int arg_num);
 // Creates closure from environment with args args body body and sends to result
 Error make_closure(Atom environment, Atom args, Atom body, Atom* result);
 // Makes string from std::string

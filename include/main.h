@@ -4,7 +4,15 @@
 struct Error;
 struct Atom;
 
-typedef Error (*function)(struct Atom args, struct Atom* result);
+typedef Error(*function)(Atom args, Atom* result);
+
+struct FunctionData
+{
+	function func;
+	bool fixed_arg_num = true;
+	int arg_num = 0;
+	FunctionData(function func, bool fixed_arg_num, int arg_num);
+};
 
 struct Ratio
 {
@@ -47,8 +55,8 @@ struct Atom
 		long integer;
 		float float_;
 		char character;
-		function func;
-		struct Ratio ratio;
+		FunctionData* func;
+		Ratio ratio;
 	} value;
 };
 

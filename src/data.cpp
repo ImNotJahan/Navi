@@ -137,10 +137,25 @@ Atom make_float(float number)
 	return atom;
 }
 
+FunctionData::FunctionData(function func, bool fixed_arg_num, int arg_num)
+{
+	this->func = func;
+	this->fixed_arg_num = fixed_arg_num;
+	this->arg_num = arg_num;
+}
+
 Atom make_function(function func)
 {
 	Atom atom = Atom{ Atom::FUNCTION };
-	atom.value.func = func;
+	atom.value.func = new FunctionData(func, false, 0);
+
+	return atom;
+}
+
+Atom make_function(function func, int arg_num)
+{
+	Atom atom = Atom{ Atom::FUNCTION };
+	atom.value.func = new FunctionData(func, true, arg_num);
 
 	return atom;
 }

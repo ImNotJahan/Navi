@@ -4,6 +4,7 @@
 #include "../include/evaluate.h"
 
 #include <iostream>
+#include "../include/garbage_collection.h"
 
 int main(int argc, char** argv)
 {
@@ -68,7 +69,43 @@ int main(int argc, char** argv)
 
 		if (!err.type) err = evaluate_expr(expr, env, &result);
 
-		if (!err.type) say_expr(result);
+		if (!err.type)
+		{	
+			// for optional top parenthesis
+			if (result.type == Atom::FUNCTION && result.value.func->fixed_arg_num)
+			{
+				Atom args = null;
+				
+				for (int i = 0; i < result.value.func->arg_num; i++)
+				{
+					Atom arg, temp;
+
+					err = read_expr(input, &input, &temp);
+
+					mark(args); // since evaluate_expr will call collect, have to mark args
+
+					if (!err.type) err = evaluate_expr(temp, env, &arg);
+					
+					args = cons(temp, args);
+
+					if (err.type)
+					{
+						say_err(err);
+						break;
+					}
+				}
+				
+				if (!err.type)
+				{
+					list_reverse(&args);
+					Atom temp;
+
+					result.value.func->func(args, &temp);
+					say_expr(temp);
+				}
+			}
+			else say_expr(result);
+		}
 		else say_err(err);
 
 		if(err.type != Error::EMPTY) std::cout << std::endl;
@@ -82,29 +119,29 @@ int main(int argc, char** argv)
 
 void set_default_environment(Atom* env)
 {
-	env_set(*env, sym("HEAD"), make_function(function_head));
-	env_set(*env, sym("TAIL"), make_function(function_tail));
-	env_set(*env, sym("PAIR"), make_function(function_pair));
-	env_set(*env, sym("+"), make_function(function_add));
-	env_set(*env, sym("-"), make_function(function_subtract));
-	env_set(*env, sym("*"), make_function(function_multiply));
-	env_set(*env, sym("/"), make_function(function_divide));
-	env_set(*env, sym("TYPE_OF"), make_function(function_type));
-	env_set(*env, sym("="), make_function(function_eq));
-	env_set(*env, sym("<"), make_function(function_less));
-	env_set(*env, sym("AND"), make_function(function_and));
-	env_set(*env, sym("OR"), make_function(function_or));
+	env_set(*env, sym("HEAD"), make_function(function_head, 1));
+	env_set(*env, sym("TAIL"), make_function(function_tail, 1));
+	env_set(*env, sym("PAIR"), make_function(function_pair, 2));
+	env_set(*env, sym("+"), make_function(function_add, 2));
+	env_set(*env, sym("-"), make_function(function_subtract, 2));
+	env_set(*env, sym("*"), make_function(function_multiply, 2));
+	env_set(*env, sym("/"), make_function(function_divide, 2));
+	env_set(*env, sym("TYPE_OF"), make_function(function_type, 1));
+	env_set(*env, sym("="), make_function(function_eq, 2));
+	env_set(*env, sym("<"), make_function(function_less, 2));
+	env_set(*env, sym("AND"), make_function(function_and, 2));
+	env_set(*env, sym("OR"), make_function(function_or, 2));
 	env_set(*env, sym("APPLY"), make_function(function_apply));
-	env_set(*env, sym("SAY"), make_function(function_say));
-	env_set(*env, sym("INT"), make_function(function_int));
-	env_set(*env, sym("FLOAT"), make_function(function_float));
+	env_set(*env, sym("SAY"), make_function(function_say, 1));
+	env_set(*env, sym("INT"), make_function(function_int, 1));
+	env_set(*env, sym("FLOAT"), make_function(function_float, 1));
 	env_set(*env, sym("RATIO"), make_function(function_ratio));
-	env_set(*env, sym("NUMERATOR"), make_function(function_numerator));
-	env_set(*env, sym("DENOMINATOR"), make_function(function_denominator));
+	env_set(*env, sym("NUMERATOR"), make_function(function_numerator, 1));
+	env_set(*env, sym("DENOMINATOR"), make_function(function_denominator, 1));
 	env_set(*env, sym("ERROR"), make_function(function_error));
-	env_set(*env, sym("STRING"), make_function(function_string));
-	env_set(*env, sym("BIGNUM"), make_function(function_bignum));
-	env_set(*env, sym("LISTEN"), make_function(function_listen));
+	env_set(*env, sym("STRING"), make_function(function_string, 1));
+	env_set(*env, sym("BIGNUM"), make_function(function_bignum, 1));
+	env_set(*env, sym("LISTEN"), make_function(function_listen, 0));
 	env_set(*env, sym("SHIFT"), make_function(function_shift));
-	env_set(*env, sym("REMAINDER"), make_function(function_remainder));
+	env_set(*env, sym("REMAINDER"), make_function(function_remainder, 2));
 }

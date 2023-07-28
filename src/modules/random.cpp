@@ -12,9 +12,9 @@ Error load_random(Atom env)
 	seed = time(0);
 	srand(seed);
 
-	env_set(env, sym("RANDOM"), make_function(function_random));
-	env_set(env, sym("SET_RANDOM_SEED"), make_function(function_set_seed));
-	env_set(env, sym("GET_RANDOM_SEED"), make_function(function_get_seed));
+	env_set(env, sym("RANDOM"), make_function(function_random, 0));
+	env_set(env, sym("SET_RANDOM_SEED"), make_function(function_set_seed, 1));
+	env_set(env, sym("GET_RANDOM_SEED"), make_function(function_get_seed, 0));
 
 	return NOERR;
 }

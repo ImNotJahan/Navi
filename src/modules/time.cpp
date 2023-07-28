@@ -6,7 +6,7 @@
 
 Error load_time(Atom env)
 {
-	env_set(env, sym("UNIX_TIME"), make_function(function_time));
+	env_set(env, sym("UNIX_TIME"), make_function(function_time, 0));
 
 	return NOERR;
 }
