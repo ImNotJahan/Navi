@@ -32,3 +32,10 @@
 	(if (= char #8) 8
 	(if (= char #9) 9
 		(error "SYNTAX" "Expected digit" "ctoi"))))))))))))
+		
+(set (string_in x list)
+	(if (null? list)
+		false
+		(if (=string (head list) x)
+			true
+			(string_in x (tail list)))))
