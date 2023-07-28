@@ -226,6 +226,27 @@ Atom subtract_bignums(Atom a, Atom b)
 
 Atom multiply_bignums(Atom a, Atom b)
 {
+	bool negative = false;
+
+	// If both are negative, cancel out signs
+	if (head(a).value.integer < 0 && head(b).value.integer < 0)
+	{
+		head(a).value.integer = std::abs(head(a).value.integer);
+		head(b).value.integer = std::abs(head(b).value.integer);
+	} // If b is negative then just pass to add func
+	else if (head(a).value.integer < 0)
+	{
+		head(a).value.integer = std::abs(head(a).value.integer);
+
+		negative = true;
+	}
+	else if (head(b).value.integer < 0)
+	{
+		head(b).value.integer = std::abs(head(b).value.integer);
+		
+		negative = true;
+	}
+
 	Atom result = int_to_bignum(0);
 
 	// Loop through digits in b
@@ -258,11 +279,34 @@ Atom multiply_bignums(Atom a, Atom b)
 		depth++;
 	}
 
+	if (negative) head(result).value.integer *= -1;
+
 	return result;
 }
 
 Atom karatsuba_bignums(Atom a, Atom b)
 {
+	bool negative = false;
+
+	// If both are negative, cancel out signs
+	if (head(a).value.integer < 0 && head(b).value.integer < 0)
+	{
+		head(a).value.integer = std::abs(head(a).value.integer);
+		head(b).value.integer = std::abs(head(b).value.integer);
+	} // If b is negative then just pass to add func
+	else if (head(a).value.integer < 0)
+	{
+		head(a).value.integer = std::abs(head(a).value.integer);
+
+		negative = true;
+	}
+	else if (head(b).value.integer < 0)
+	{
+		head(b).value.integer = std::abs(head(b).value.integer);
+
+		negative = true;
+	}
+
 	int lengths[2] = { bignum_length(copy_list(a)), bignum_length(copy_list(b)) };
 
 	if (lengths[0] < 2 || lengths[1] < 2)
@@ -280,9 +324,13 @@ Atom karatsuba_bignums(Atom a, Atom b)
 
 	// This looks quite terrifying, but it's just acz^2+bcz+adz+bd
 	// Where low1 = a, high1 = b, low2 = c, high2 = d, z = 10^middle
-	return add_bignums(shift_bignum(karatsuba_bignums(low1, low2), middle * 2),
+	Atom result = add_bignums(shift_bignum(karatsuba_bignums(low1, low2), middle * 2),
 		add_bignums(shift_bignum(karatsuba_bignums(high1, low2), middle), add_bignums(shift_bignum(karatsuba_bignums(low1, high2), middle),
 			karatsuba_bignums(high1, high2))));
+
+	if (negative) head(result).value.integer *= -1;
+
+	return result;
 }
 
 // Uses long division
