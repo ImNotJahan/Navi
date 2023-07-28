@@ -19,13 +19,13 @@
 			" AM")))
 
 (set (current_second)
-	(remainder (unix_time) 60))
+	(int (remainder (unix_time) 60)))
 
 (set (current_minute offset)
-	(remainder (/ (time offset) 60) 60))
+	(int (remainder (/ (time offset) 60) 60)))
 
 (set (current_hour offset)
-	(remainder (/ (time offset) 3600) 24))
+	(int (remainder (/ (time offset) 3600) 24)))
 	
 (set (post_midday offset)
-	(> (int (current_hour offset)) 12))
+	(> (current_hour offset) 12))
