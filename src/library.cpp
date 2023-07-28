@@ -33,6 +33,7 @@ Error interpret_file(Atom environment, std::string path, LogLevel logLevel, std:
 Error interpret_file(Atom environment, std::string path, LogLevel logLevel, std::string symbols_to_load, std::string prefix)
 {
 	if (path == "random_builtin") return load_random(environment);
+	if (path == "time_builtin") return load_time(environment);
 
 	std::string text = read_file(path);
 	

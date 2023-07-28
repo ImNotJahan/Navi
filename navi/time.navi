@@ -1,0 +1,31 @@
+(load "time_builtin")
+(load "navi/strings.navi" "+ctos +string")
+
+(set (time offset)
+	(+ (unix_time) (* offset 3600)))
+
+(set (military_time offset)
+	(+string
+		(+ctos (string (current_hour offset)) #:)
+		(string (current_minute offset))))
+
+(set (clock_time offset)
+	(+string 
+		(+string
+			(+ctos (string (remainder (current_hour offset) 12)) #:)
+			(string (current_minute offset)))
+		(if (post_midday -7) then 
+			" PM" otherwise
+			" AM")))
+
+(set (current_second)
+	(remainder (unix_time) 60))
+
+(set (current_minute offset)
+	(remainder (/ (time offset) 60) 60))
+
+(set (current_hour offset)
+	(remainder (/ (time offset) 3600) 24))
+	
+(set (post_midday offset)
+	(> (int (current_hour offset)) 12))

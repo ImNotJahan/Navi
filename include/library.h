@@ -13,3 +13,4 @@ Error interpret_file(Atom environment, std::string path, LogLevel logLevel, std:
 Error interpret_file(Atom environment, std::string path, LogLevel logLevel, std::string symbols_to_load, std::string prefix);
 
 Error load_random(Atom env);
+Error load_time(Atom env);
