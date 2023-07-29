@@ -383,89 +383,91 @@ Error evaluate_do_returning(Atom* stack, Atom* expr, Atom* environment, Atom* re
 	if (!nullp(body)) // Still body to evaluate
 		return evaluate_do_applying(stack, expr, environment, result);
 
-	if (nullp(operation)) // Finished evaluating operator
+	switch (operation.type)
 	{
-		operation = *result;
-		list_set(*stack, 2, operation);
-		
-		if (operation.type == Atom::EXPAND)
-		{
-			// Don't evaluate macro arguments
-			args = list_get(*stack, 3);
-			*stack = make_frame(*stack, *environment, null);
-
-			operation.type = Atom::CLOSURE;
+		case Atom::NULL_: // Finished evaluating operator
+			operation = *result;
 			list_set(*stack, 2, operation);
-			list_set(*stack, 4, args);
 
-			return evaluate_do_binding(stack, expr, environment);
-		}
-	}
-	else if (operation.type == Atom::SYMBOL)
-	{
-		if (*operation.value.symbol == "SET")
-		{
-			Atom symbol = list_get(*stack, 4);
+			if (operation.type == Atom::EXPAND)
+			{
+				// Don't evaluate macro arguments
+				args = list_get(*stack, 3);
+				*stack = make_frame(*stack, *environment, null);
 
-			env_set(*environment, symbol, *result);
+				operation.type = Atom::CLOSURE;
+				list_set(*stack, 2, operation);
+				list_set(*stack, 4, args);
+
+				return evaluate_do_binding(stack, expr, environment);
+			}
+
+			break;
+
+		case Atom::SYMBOL:
+			if (*operation.value.symbol == "SET")
+			{
+				Atom symbol = list_get(*stack, 4);
+
+				env_set(*environment, symbol, *result);
+				*stack = head((*stack));
+				*expr = cons(sym("QUOTE"), cons(symbol, null));
+
+				return NOERR;
+			}
+			else if (*operation.value.symbol == "CHANGE")
+			{
+				Atom symbol = list_get(*stack, 4);
+
+				Error err = env_change(*environment, symbol, *result);
+				*stack = head((*stack));
+				*expr = cons(sym("QUOTE"), cons(symbol, null));
+
+				return err;
+			}
+			else if (*operation.value.symbol == "IF")
+			{
+				args = list_get(*stack, 3);
+				int arg_length = list_length(args);
+
+				if ((*result).type != Atom::BOOLEAN) return Error{ Error::TYPE, "Expected bool", "IF" };
+
+				Atom if_do, else_do;
+
+				if (arg_length == 4)
+				{
+					if_do = head(tail(args));
+					else_do = head(tail(tail(tail(args))));
+				}
+				else if (arg_length == 2)
+				{
+					if_do = head(args);
+					else_do = head(tail(args));
+				}
+				else
+				{
+					return Error{ Error::ARGS, "Somehow have incorrect number of args (should not reach here)", "EVALUATE_DO_RETURNING IF" };
+				}
+
+				*expr = (*result).value.boolean ? if_do : else_do;
+				*stack = head((*stack));
+
+				return NOERR;
+			}
+			else goto store_arg;
+			break;
+
+		case Atom::EXPAND:
+			*expr = *result;
 			*stack = head((*stack));
-			*expr = cons(sym("QUOTE"), cons(symbol, null));
 
 			return NOERR;
-		}
-		else if (*operation.value.symbol == "CHANGE")
-		{
-			Atom symbol = list_get(*stack, 4);
 
-			Error err = env_change(*environment, symbol, *result);
-			*stack = head((*stack));
-			*expr = cons(sym("QUOTE"), cons(symbol, null));
-
-			return err;
-		}
-		else if (*operation.value.symbol == "IF")
-		{
-			args = list_get(*stack, 3);
-			int arg_length = list_length(args);
-
-			if ((*result).type != Atom::BOOLEAN) return Error{ Error::TYPE, "Expected bool", "IF" };
-
-			Atom if_do, else_do;
-
-			if (arg_length == 4)
-			{
-				if_do = head(tail(args));
-				else_do = head(tail(tail(tail(args))));
-			}
-			else if (arg_length == 2)
-			{
-				if_do = head(args);
-				else_do = head(tail(args));
-			}
-			else
-			{
-				return Error{ Error::ARGS, "Somehow have incorrect number of args (should not reach here)", "EVALUATE_DO_RETURNING IF" };
-			}
-
-			*expr = (*result).value.boolean ? if_do : else_do;
-			*stack = head((*stack));
-
-			return NOERR;
-		}
-		else goto store_arg;
-	}
-	else if (operation.type == Atom::EXPAND)
-	{
-		*expr = *result;
-		*stack = head((*stack));
-
-		return NOERR;
-	}
-	else
-	{
-	store_arg: // store evaluated arguments
-		args = list_get(*stack, 4);
-		list_set(*stack, 4, cons(*result, args));
+		default:
+		store_arg: // store evaluated arguments
+			args = list_get(*stack, 4);
+			list_set(*stack, 4, cons(*result, args));
+			break;
 	}
 	
 	args = list_get(*stack, 3);
