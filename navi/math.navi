@@ -28,3 +28,46 @@
 
 (set (even? x) (= (remainder x 2) 0))
 (set (odd? x) (not (even? x)))
+
+(set (floor x) 
+	~ changing a float to an int truncates it
+	(set rounded_number to (int x))
+	
+	(if (and (< x 0) (not= rounded_number x))
+		then_return (- rounded_number 1)
+		otherwise_return rounded_number))
+
+(set (round x)
+	(set rounded_number to (floor x))
+	
+	(if (>= (- x rounded_number) 0.5) 
+		then_return (+ rounded_number 1)
+		otherwise_return rounded_number))
+		
+(set (ceiling x) 
+	(set rounded_number to (floor x))
+	
+	(if (not= rounded_number x)
+		then_return (+ rounded_number 1)
+		otherwise_return rounded_number))
+		
+(set (logarithm b x)
+	(set x to (exp x 10))
+	(set temp to b)
+	(set result to 1)
+	
+	(while (> x temp) do
+		(++ result)
+		(change temp to (exp b result)))
+		
+	(/ result 10))
+	
+(set (root b x)
+	(set temp to 1)
+	(set result to 1)
+	
+	(while (> x temp) do
+		(++ result)
+		(change temp to (exp result b)))
+		
+	result)
