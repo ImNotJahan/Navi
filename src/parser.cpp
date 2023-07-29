@@ -6,7 +6,7 @@
 
 Error lexer(std::string str, std::string* start, std::string* end)
 {
-	const char* prefix = "`\'()\"";
+	const char* prefix = "\'()\"";
 	const char* delimiter = "() \t\n";
 	const char* whitespace = " \t\n";
 
@@ -48,6 +48,17 @@ Error lexer(std::string str, std::string* start, std::string* end)
 		}
 		
 		str = str.substr(index + 1);
+
+		return lexer(str, start, end);
+	}
+	else if (str[0] == '$') // Single word comments
+	{
+		int index = first_char(str, delimiter);
+		if (index == -1) *start = "null";
+		else
+		{
+			str = str.substr(index);
+		}
 
 		return lexer(str, start, end);
 	}
