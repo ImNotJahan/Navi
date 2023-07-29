@@ -1,0 +1,39 @@
+(set (rule110 start row_count)
+	(set rows to (list start))
+	(set size to (length start))
+	
+	(set (draw) 
+		(change rows (reverse rows))
+		(for_each row in rows do (sayline row)))
+	
+	(set (add_row)
+		(set above to (head rows))
+		(set row to "")
+		
+		(for (set i to 0) (< i size) (++ i) do
+			(change row (+ctos row 
+				(rule (string (list 
+					(get above (map_to_length (- i 1) size))
+					(get above i)
+					(get above (map_to_length (+ i 1) size))))))))
+					
+		(push row to rows))
+	
+	(set (map_to_length index len)
+		(if (< index 0)
+			(+ size index)
+			(remainder index size)))
+	
+	(set (rule x)
+		(if (= x "xxx") #\s
+		(if (= x "xx ") #x
+		(if (= x "x x") #x
+		(if (= x "x  ") #\s
+		(if (= x " xx") #x
+		(if (= x " x ") #x
+		(if (= x "  x") #x
+		(if (= x "   ") #\s
+			(error "SYNTAX" "Incorrect rule" "RULE"))))))))))
+		
+	(repeat row_count times (add_row))
+	(draw))
