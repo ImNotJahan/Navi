@@ -248,8 +248,10 @@ Error function_divide(Atom args, Atom* result)
 			if (remainder == 0) *result = make_int(a.value.integer / b.value.integer);
 			else
 			{
-				a.value.integer /= gcd(a.value.integer, b.value.integer);
-				b.value.integer /= gcd(a.value.integer, b.value.integer);
+				int d = gcd(a.value.integer, b.value.integer);
+				a.value.integer /= d;
+				b.value.integer /= d;
+
 				*result = make_ratio(a, b);
 			}
 		}

@@ -161,6 +161,14 @@ Error function_int(Atom args, Atom* result)
 	if (value.type == value.FLOAT) integer.value.integer = value.value.float_;
 	else if (value.type == value.INTEGER) integer.value.integer = value.value.integer;
 	else if (value.type == value.BIGNUM) integer.value.integer = head(value).value.integer;
+	else if (value.type == value.RATIO)
+	{
+		if (head(value).type != Atom::INTEGER || tail(value).type != Atom::INTEGER)
+		{
+			return Error{ Error::SYNTAX, "Ratio can only contain integers", "INT" };
+		}
+		integer.value.integer = head(value).value.integer / tail(value).value.integer;
+	}
 	else return Error{ Error::TYPE, "Expected number", "INT"};
 
 	*result = integer;

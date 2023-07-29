@@ -3,23 +3,23 @@
 (load "navi/math.navi" "exp gcd abs remainder remove_decimal")
 
 (set (+ratio a b)
-	(let ((nume (+ (* (denominator a) (numerator b)) (* (denominator b) (numerator a)))) (deno (* (denominator a) (denominator b))))
+	(let ((nume (+ (* (tail a) (head b)) (* (tail b) (head a)))) (deno (* (tail a) (tail b))))
 		(simplify_ratio (ratio nume deno))))
 		
 (set (-ratio a b) 
-	(let ((nume (- (* (denominator b) (numerator a)) (* (denominator a) (numerator b)))) (deno (* (denominator a) (denominator b))))
+	(let ((nume (- (* (tail b) (head a)) (* (tail a) (head b)))) (deno (* (tail a) (tail b))))
 		(simplify_ratio (ratio nume deno))))
 		
 (set (*ratio a b) 
-	(let ((nume (* (numerator a) (numerator b))) (deno (* (denominator a) (denominator b))))
+	(let ((nume (* (head a) (head b))) (deno (* (tail a) (tail b))))
 		(simplify_ratio (ratio nume deno))))
 		
 (set (/ratio a b) 
-	(let ((nume (* (numerator a) (denominator b))) (deno (* (denominator a) (numerator b))))
+	(let ((nume (* (head a) (tail b))) (deno (* (tail a) (head b))))
 		(simplify_ratio (ratio nume deno))))
 		
 (set (simplify_ratio r) 
-	(let ((nume (numerator r)) (deno (denominator r)))
+	(let ((nume (head r)) (deno (tail r)))
 		(ratio (/ nume (gcd nume deno)) (/ deno (gcd nume deno)))))
 	
 (set (ftor f)
@@ -35,4 +35,4 @@
 ~ builtin = can compare ratios, but it won't simplify them beforehand
 (set (=ratio a b)
 	(let ((a (simplify_ratio a)) (b (simplify_ratio b)))
-		(and (= (denominator a) (denominator b)) (= (numerator a) (numerator b)))))
+		(and (= (tail a) (tail b)) (= (head a) (head b)))))
