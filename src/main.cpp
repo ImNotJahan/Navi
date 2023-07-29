@@ -133,9 +133,7 @@ void set_default_environment(Atom* env)
 	env_set(*env, sym("SAY"), make_function(function_say, 1));
 	env_set(*env, sym("INT"), make_function(function_int, 1));
 	env_set(*env, sym("FLOAT"), make_function(function_float, 1));
-	env_set(*env, sym("RATIO"), make_function(function_ratio));
-	env_set(*env, sym("NUMERATOR"), make_function(function_numerator, 1));
-	env_set(*env, sym("DENOMINATOR"), make_function(function_denominator, 1));
+	env_set(*env, sym("RATIO"), make_function(function_ratio, 2));
 	env_set(*env, sym("ERROR"), make_function(function_error));
 	env_set(*env, sym("STRING"), make_function(function_string, 1));
 	env_set(*env, sym("BIGNUM"), make_function(function_bignum, 1));

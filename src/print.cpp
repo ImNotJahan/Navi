@@ -75,7 +75,10 @@ void say_expr(Atom atom)
 			break;
 
 		case Atom::RATIO:
-			std::cout << atom.value.ratio.numerator << ":" << atom.value.ratio.denominator;
+			say_expr(head(atom));
+			std::cout << ":";
+			say_expr(tail(atom));
+
 			break;
 
 		case Atom::BIGNUM:

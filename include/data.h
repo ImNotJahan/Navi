@@ -24,8 +24,7 @@ Error make_closure(Atom environment, Atom args, Atom body, Atom* result);
 // Makes string from std::string
 Error make_string(const std::string str, Atom* result);
 // Makes ratio from parts
-Atom make_ratio(int numerator, int denominator);
-Atom make_ratio(int numerator, int denominator, bool simplify);
+Atom make_ratio(Atom numerator, Atom denominator);
 // Makes bignum from string of number
 Atom make_bignum(std::string number);
 

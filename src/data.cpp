@@ -86,7 +86,6 @@ Atom make_symbol(std::string* str)
 		atom = head(pair);
 		if (*atom.value.symbol == *str)
 		{
-			delete str;
 			return atom;
 		}
 
@@ -221,25 +220,12 @@ Error make_string(const std::string parameter_str, Atom* result)
 	return NOERR;
 }
 
-Atom make_ratio(int numerator, int denominator)
+Atom make_ratio(Atom numerator, Atom denominator)
 {
-	return make_ratio(numerator, denominator, false);
-}
+	Atom atom;
+	atom = cons(numerator, denominator);
 
-Atom make_ratio(int numerator, int denominator, bool simplify)
-{
-	if (simplify)
-	{
-		int ratio_gcd = gcd(numerator, denominator);
-
-		numerator /= ratio_gcd;
-		denominator /= ratio_gcd;
-	}
-
-	Atom atom = Atom{ Atom::RATIO };
-	atom.value.ratio.numerator = numerator;
-	atom.value.ratio.denominator = denominator;
-
+	atom.type = Atom::RATIO;
 	return atom;
 }
 

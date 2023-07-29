@@ -185,10 +185,6 @@ bool compare_lists(Atom l1, Atom l2)
 				break;
 
 			case Atom::RATIO:
-				if (v1.value.ratio.denominator != v2.value.ratio.denominator) return false;
-				if (v1.value.ratio.numerator != v2.value.ratio.numerator) return false;
-				break;
-
 			case Atom::PAIR:
 			case Atom::BIGNUM:
 			case Atom::STRING:

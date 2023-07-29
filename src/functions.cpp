@@ -9,7 +9,7 @@ Error function_head(Atom args, Atom* result)
 	check_args(args, 1, "HEAD");
 
 	if (nullp(head(args))) *result = null;
-	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING || head(args).type == Atom::BIGNUM))
+	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING || head(args).type == Atom::BIGNUM || head(args).type == Atom::RATIO))
 		return Error{ Error::TYPE, "Expected string or pair", "HEAD"};
 	else *result = head(head(args));
 
@@ -21,7 +21,7 @@ Error function_tail(Atom args, Atom* result)
 	check_args(args, 1, "TAIL");
 
 	if (nullp(head(args))) *result = null;
-	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING || head(args).type == Atom::BIGNUM))
+	else if (!(head(args).type == Atom::PAIR || head(args).type == Atom::STRING || head(args).type == Atom::BIGNUM || head(args).type == Atom::RATIO))
 		return Error{ Error::TYPE, "Expected string or pair", "TAIL" };
 	else *result = tail(head(args));
 
@@ -137,7 +137,13 @@ Error function_float(Atom args, Atom* result)
 
 	if (value.type == value.FLOAT) float_.value.float_ = value.value.float_;
 	else if (value.type == value.INTEGER) float_.value.float_ = value.value.integer;
-	else if (value.type == value.RATIO) float_.value.float_ = (float)value.value.ratio.numerator / value.value.ratio.denominator;
+	else if (value.type == value.RATIO)
+	{
+		if (head(value).type == Atom::INTEGER && tail(value).type == Atom::INTEGER)
+		{
+			float_.value.float_ = (float)head(value).value.integer / tail(value).value.integer;
+		}
+	}
 	else return Error{ Error::TYPE, "Expected number", "FLOAT"};
 
 	*result = float_;
@@ -154,7 +160,6 @@ Error function_int(Atom args, Atom* result)
 
 	if (value.type == value.FLOAT) integer.value.integer = value.value.float_;
 	else if (value.type == value.INTEGER) integer.value.integer = value.value.integer;
-	else if (value.type == value.RATIO) integer.value.integer = value.value.ratio.numerator / value.value.ratio.denominator;
 	else if (value.type == value.BIGNUM) integer.value.integer = head(value).value.integer;
 	else return Error{ Error::TYPE, "Expected number", "INT"};
 
@@ -169,14 +174,11 @@ Error function_ratio(Atom args, Atom* result)
 
 	Atom numerator = head(args);
 	Atom denominator = head(tail(args));
-	Atom ratio{ Atom::RATIO };
 
-	if (!both_type(numerator, denominator, INTEGER)) return Error{ Error::TYPE, "Expected integers", "RATIO" };
+	if (!(numerator.type == Atom::INTEGER || numerator.type == Atom::BIGNUM &&
+		denominator.type == Atom::INTEGER || denominator.type == Atom::BIGNUM)) return Error{ Error::TYPE, "Expected integers", "RATIO" };
 
-	ratio.value.ratio.numerator = numerator.value.integer;
-	ratio.value.ratio.denominator = denominator.value.integer;
-
-	*result = ratio;
+	*result = make_ratio(numerator, denominator);
 
 	return NOERR;
 }
@@ -220,15 +222,6 @@ Error function_string(Atom args, Atom* result)
 		case Atom::NULL_:
 			err = make_string("null", result);
 			break;
-
-		case Atom::RATIO:
-			str = 
-				std::to_string(value.value.ratio.numerator) 
-				+ ":" + 
-				std::to_string(value.value.ratio.denominator);
-		
-			err = make_string(str, result);
-			break;
 	
 		case Atom::CHARACTER:
 			err = make_string(std::string(1, value.value.character), result);
@@ -240,8 +233,6 @@ Error function_string(Atom args, Atom* result)
 			break;
 
 		case Atom::BIGNUM:
-			
-
 			str += std::to_string(head(value).value.integer);
 			value = tail(value);
 
@@ -317,36 +308,6 @@ Error function_bignum(Atom args, Atom* result)
 	{
 		return Error{ Error::TYPE, "Type cannot be turned into bignum", "BIGNUM" };
 	}
-
-	return NOERR;
-}
-
-Error function_numerator(Atom args, Atom* result)
-{
-	check_args(args, 1, "NUMERATOR");
-
-	Atom ratio = head(args);
-	Atom numerator{ Atom::INTEGER };
-
-	if (ratio.type != Atom::RATIO) return Error{ Error::TYPE, "Expected ratio", "NUMERATOR" };
-
-	numerator.value.integer = ratio.value.ratio.numerator;
-	*result = numerator;
-
-	return NOERR;
-}
-
-Error function_denominator(Atom args, Atom* result)
-{
-	check_args(args, 1, "DENOMINATOR");
-
-	Atom ratio = head(args);
-	Atom denominator{ Atom::INTEGER };
-
-	check_type(ratio, RATIO, "ratio", "DENOMINATOR");
-
-	denominator.value.integer = ratio.value.ratio.denominator;
-	*result = denominator;
 
 	return NOERR;
 }

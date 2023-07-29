@@ -28,6 +28,9 @@
 		
 (set (itor i)
 	(ratio i 1))
+	
+(set (numerator x) (head x))
+(set (denominator x) (tail x))
 
 ~ builtin = can compare ratios, but it won't simplify them beforehand
 (set (=ratio a b)

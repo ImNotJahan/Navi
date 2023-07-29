@@ -1,6 +1,7 @@
 #include "../include/main.h"
 #include "../include/functions.h"
 #include "../include/bignum_math.h"
+#include "../include/numbers.h"
 
 Error function_add(Atom args, Atom* result)
 {
@@ -245,7 +246,12 @@ Error function_divide(Atom args, Atom* result)
 			// Int division will return ratio if result is not int
 			int remainder = a.value.integer % b.value.integer;
 			if (remainder == 0) *result = make_int(a.value.integer / b.value.integer);
-			else *result = make_ratio(a.value.integer, b.value.integer, true);
+			else
+			{
+				a.value.integer /= gcd(a.value.integer, b.value.integer);
+				b.value.integer /= gcd(a.value.integer, b.value.integer);
+				*result = make_ratio(a, b);
+			}
 		}
 		else if (b.type == Atom::FLOAT)
 		{

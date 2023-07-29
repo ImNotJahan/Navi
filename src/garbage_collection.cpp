@@ -11,6 +11,7 @@ void mark(Atom root)
 			root.type == Atom::CLOSURE ||
 			root.type == Atom::EXPAND ||
 			root.type == Atom::STRING ||
+			root.type == Atom::RATIO ||
 			root.type == Atom::BIGNUM)) return;
 
 		alloc = (Allocation*)((char*)root.value.pair - offsetof(Allocation, pair));

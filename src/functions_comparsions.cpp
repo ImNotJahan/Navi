@@ -41,12 +41,7 @@ Error function_eq(Atom args, Atom* result)
 	if (both_type(a, b, SYMBOL)) *result = type_eq(a, b, symbol);
 	else if (both_type(a, b, CHARACTER)) *result = type_eq(a, b, character);
 	else if (both_type(a, b, BOOLEAN)) *result = type_eq(a, b, boolean);
-	else if (both_type(a, b, PAIR) || both_type(a, b, STRING)) *result = compare_lists(a, b) tf;
-	else if (both_type(a, b, RATIO))
-	{
-		*result = a.value.ratio.denominator == b.value.ratio.denominator &&
-			a.value.ratio.numerator == b.value.ratio.numerator tf;
-	}
+	else if (both_type(a, b, PAIR) || both_type(a, b, STRING) || both_type(a, b, RATIO)) *result = compare_lists(a, b) tf;
 	else return Error{ Error::TYPE, "Cannot compare type", "=" };
 
 	return NOERR;

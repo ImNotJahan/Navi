@@ -14,12 +14,6 @@ struct FunctionData
 	FunctionData(function func, bool fixed_arg_num, int arg_num);
 };
 
-struct Ratio
-{
-	int numerator;
-	int denominator;
-};
-
 struct Atom
 {
 	// I had to put _ infront of a few things since they were reserved keywords
@@ -56,7 +50,6 @@ struct Atom
 		float float_;
 		char character;
 		FunctionData* func;
-		Ratio ratio;
 	} value;
 };
 
