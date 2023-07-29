@@ -156,7 +156,7 @@
 
 (expand (for init predicate each sugar . body)
 	(if (= predicate 'IN)
-		;(for_each ,init ,each do ,@body)
+		;(for_each ,init in ,each do ,@body)
 		;(do
 			,init
 			(while ,predicate do

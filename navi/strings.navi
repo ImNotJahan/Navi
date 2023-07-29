@@ -5,7 +5,6 @@
 		
 ~ add char to string
 (set (+ctos str char)
-	(check_type str 'STRING "+ctos")
 	(check_type char 'CHARACTER "+ctos")
 	
 	(string (append str (pair char null))))
