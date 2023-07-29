@@ -86,6 +86,7 @@ Atom make_symbol(std::string* str)
 		atom = head(pair);
 		if (*atom.value.symbol == *str)
 		{
+			delete str;
 			return atom;
 		}
 
