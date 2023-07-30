@@ -140,6 +140,7 @@
     <ClCompile Include="src\garbage_collection.cpp" />
     <ClCompile Include="src\library.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\modules\files.cpp" />
     <ClCompile Include="src\modules\random.cpp" />
     <ClCompile Include="src\modules\time.cpp" />
     <ClCompile Include="src\numbers.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="include\garbage_collection.h" />
     <ClInclude Include="include\library.h" />
     <ClInclude Include="include\main.h" />
+    <ClInclude Include="include\modules\files.h" />
     <ClInclude Include="include\modules\random.h" />
     <ClInclude Include="include\modules\time.h" />
     <ClInclude Include="include\numbers.h" />

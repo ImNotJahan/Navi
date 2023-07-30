@@ -34,6 +34,7 @@ Error interpret_file(Atom environment, std::string path, LogLevel logLevel, std:
 {
 	if (path == "random_builtin") return load_random(environment);
 	if (path == "time_builtin") return load_time(environment);
+	if (path == "files_builtin") return load_files(environment);
 
 	std::string text = read_file(path);
 	

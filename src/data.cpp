@@ -122,7 +122,7 @@ Error make_character(std::string character, Atom* result)
 		else if (character == "\\s") *result = make_character(' '); // space
 		else if (character == "\\\"") *result = make_character('"'); // "
 		else if (character == "\\p") *result = make_character('\\'); // just a backlash, for some reason \\\\ kept having errors
-		else return Error{ Error::TYPE, "Character expected", "MAKE_CHARACTER" };
+		else *result = make_character(character[1]);
 	}
 	else *result = make_character(character[0]);
 
