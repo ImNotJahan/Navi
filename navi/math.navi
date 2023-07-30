@@ -26,6 +26,9 @@
 
 (set (abs x) (if (< x 0) (* x -1) x))
 
+(set pi to 3.14159)
+(set e to 2.71828)
+
 (set (even? x) (= (remainder x 2) 0))
 (set (odd? x) (not (even? x)))
 
