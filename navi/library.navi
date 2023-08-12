@@ -191,3 +191,25 @@
 
 (set (or p1 p2)
 	(if p1 then_return true otherwise_return p2))
+	
+(set +
+  (let ((old+ +))
+    (lambda xs (fold_left old+ 0 xs))))
+	
+(set -
+  (let ((old- -))
+    (lambda (x . xs)
+      (if (non_null? xs)
+          (fold_left old- x xs)
+          (old- 0 x)))))
+
+(set *
+  (let ((old* *))
+    (lambda xs (fold_left old* 1 xs))))
+
+(set /
+  (let ((old/ /))
+    (lambda (x . xs)
+      (if (non_null? xs)
+          (fold_left old/ x xs)
+          (old/ 1 x)))))
